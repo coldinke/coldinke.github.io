@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html><head lang="en">
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>C&#43;&#43; 面向对象编程简述 - Vinci&#39;s Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="C&#43;&#43; 面向对象编程
+简述面向对象编程
+面向对象编程这种范式是以**对象(Object)**为核心概念的一种编程范式，它以符合人类的思维方式和适合开发维护大型、复杂的程序而流行。许多语言最开始也基于这一编程范式而设计的，如 C&#43;&#43;, Java, Python 等。
+但 C&#43;&#43; 不单单只支持面向对象这一种编程范式，你可以用它编写出命令式、函数式等多种风格的代码。如果你阅读过 Scott Meyers 的 《Effective C&#43;&#43;》 你应该知道下面这条建议：
+
+View C&#43;&#43; as a federation of languages
+
+在长久的发展中，C&#43;&#43; 没有了最初的那份纯粹，它多了许多复杂而有趣的特性，如funcaional, template 等。我想这或许是网上流传 C&#43;&#43; 学习曲线极高的缘由。说远了，我们说会本篇的主题 - 面向对象编程
+正如前文所说面向对象的核心在对象，它由两部分组成一是属性(data)用于描述对象具备的特征（质）；二是方法(code)用于描述对象的行为。在此基础上出现了封装、类、继承、多态等概念。下面我们来思考个问题如何使用面向对象的思想来描述一个学生？
+
+可能你的答案于 PPT 一样，也可能你会有其他的想法，其实没有所谓的标准答案。这不是考试 :(
+下面我们进入 C&#43;&#43; 的世界，看看它提供了什么样的机制来帮助我们写出“好”的面向对象风格的代码 :)" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="C&#43;&#43; 面向对象编程简述" />
+<meta property="og:description" content="C&#43;&#43; 面向对象编程
+简述面向对象编程
+面向对象编程这种范式是以**对象(Object)**为核心概念的一种编程范式，它以符合人类的思维方式和适合开发维护大型、复杂的程序而流行。许多语言最开始也基于这一编程范式而设计的，如 C&#43;&#43;, Java, Python 等。
+但 C&#43;&#43; 不单单只支持面向对象这一种编程范式，你可以用它编写出命令式、函数式等多种风格的代码。如果你阅读过 Scott Meyers 的 《Effective C&#43;&#43;》 你应该知道下面这条建议：
+
+View C&#43;&#43; as a federation of languages
+
+在长久的发展中，C&#43;&#43; 没有了最初的那份纯粹，它多了许多复杂而有趣的特性，如funcaional, template 等。我想这或许是网上流传 C&#43;&#43; 学习曲线极高的缘由。说远了，我们说会本篇的主题 - 面向对象编程
+正如前文所说面向对象的核心在对象，它由两部分组成一是属性(data)用于描述对象具备的特征（质）；二是方法(code)用于描述对象的行为。在此基础上出现了封装、类、继承、多态等概念。下面我们来思考个问题如何使用面向对象的思想来描述一个学生？
+
+可能你的答案于 PPT 一样，也可能你会有其他的想法，其实没有所谓的标准答案。这不是考试 :(
+下面我们进入 C&#43;&#43; 的世界，看看它提供了什么样的机制来帮助我们写出“好”的面向对象风格的代码 :)" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.vinci.xyz/posts/cppoop/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-11-24T17:25:13+08:00" />
+<meta property="article:modified_time" content="2023-11-24T17:25:13+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="C&#43;&#43; 面向对象编程简述"/>
+<meta name="twitter:description" content="C&#43;&#43; 面向对象编程
+简述面向对象编程
+面向对象编程这种范式是以**对象(Object)**为核心概念的一种编程范式，它以符合人类的思维方式和适合开发维护大型、复杂的程序而流行。许多语言最开始也基于这一编程范式而设计的，如 C&#43;&#43;, Java, Python 等。
+但 C&#43;&#43; 不单单只支持面向对象这一种编程范式，你可以用它编写出命令式、函数式等多种风格的代码。如果你阅读过 Scott Meyers 的 《Effective C&#43;&#43;》 你应该知道下面这条建议：
+
+View C&#43;&#43; as a federation of languages
+
+在长久的发展中，C&#43;&#43; 没有了最初的那份纯粹，它多了许多复杂而有趣的特性，如funcaional, template 等。我想这或许是网上流传 C&#43;&#43; 学习曲线极高的缘由。说远了，我们说会本篇的主题 - 面向对象编程
+正如前文所说面向对象的核心在对象，它由两部分组成一是属性(data)用于描述对象具备的特征（质）；二是方法(code)用于描述对象的行为。在此基础上出现了封装、类、继承、多态等概念。下面我们来思考个问题如何使用面向对象的思想来描述一个学生？
+
+可能你的答案于 PPT 一样，也可能你会有其他的想法，其实没有所谓的标准答案。这不是考试 :(
+下面我们进入 C&#43;&#43; 的世界，看看它提供了什么样的机制来帮助我们写出“好”的面向对象风格的代码 :)"/>
+<script src="https://blog.vinci.xyzjs/feather.min.js"></script>
+	
+	
+        <link href="https://blog.vinci.xyz/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="https://blog.vinci.xyz/css/main.ac08a4c9714baa859217f92f051deb58df2938ec352b506df655005dcaf98cc0.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="https://blog.vinci.xyz/css/dark.726cd11ca6eb7c4f7d48eb420354f814e5c1b94281aaf8fd0511c1319f7f78a4.css" media="(prefers-color-scheme: dark)"  />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+	
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+		
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+	
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="https://blog.vinci.xyz">Vinci&#39;s Blog</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		<a href="/tags">Tags</a>
+		
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">C&#43;&#43; 面向对象编程简述</h1>
+			<div class="meta">Posted on Nov 24, 2023</div>
+		</div>
+		
+
+		<section class="body">
+			<h1 id="c-面向对象编程">C++ 面向对象编程</h1>
+<h2 id="简述面向对象编程">简述面向对象编程</h2>
+<p>面向对象编程这种范式是以**对象(Object)**为核心概念的一种编程范式，它以符合人类的思维方式和适合开发维护大型、复杂的程序而流行。许多语言最开始也基于这一编程范式而设计的，如 C++, Java, Python 等。</p>
+<p>但 C++ 不单单只支持面向对象这一种编程范式，你可以用它编写出命令式、函数式等多种风格的代码。如果你阅读过 Scott Meyers 的 《Effective C++》 你应该知道下面这条建议：</p>
+<blockquote>
+<p>View C++ as a federation of languages</p>
+</blockquote>
+<p>在长久的发展中，C++ 没有了最初的那份纯粹，它多了许多复杂而有趣的特性，如funcaional, template 等。我想这或许是网上流传 C++ 学习曲线极高的缘由。说远了，我们说会本篇的主题 - 面向对象编程</p>
+<p>正如前文所说面向对象的核心在对象，它由两部分组成一是属性(data)用于描述对象具备的特征（质）；二是方法(code)用于描述对象的行为。在此基础上出现了封装、类、继承、多态等概念。下面我们来思考个问题如何使用面向对象的思想来描述一个学生？</p>
+<p><img src="https://blog-pricture.obs.cn-east-3.myhuaweicloud.com/image/example_oop.png" alt="example_oop1"></p>
+<p>可能你的答案于 PPT 一样，也可能你会有其他的想法，其实没有所谓的标准答案。这不是考试 :(</p>
+<p>下面我们进入 C++ 的世界，看看它提供了什么样的机制来帮助我们写出“好”的面向对象风格的代码 :)</p>
+<h2 id="使用-c-写面向对象风格的代码">使用 C++ 写面向对象风格的代码</h2>
+<h3 id="c-提供的机制支持">C++ 提供的机制/支持</h3>
+<p>既然说所有支持面向对象范式的语言都存在封装、继承和多态这三个显著特点，我们就从这三个特点来说说 C++ 提供了什么样的机制？</p>
+<ul>
+<li>封装
+<ul>
+<li>C++ 提供 <code>class</code> 关键字对具有相同属性和方法对象的共同描述，并且提供了 <code>private</code> 等关键字支持对 <code>class</code> 外部访问内部数据和方法的权限进行控制的方式。</li>
+<li>提供两种特殊的成员方法分别是 <code>constructor</code> 和 <code>destructor</code> 用于 <code>class</code> 在不同情况下实体化一个新对象和销毁对象的方法。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>乍一看单独划分出 <code>constructor</code> 和 <code>destructor</code> 是无意义的，但实际上不然在一个存在继承和其他关系的 <code>class</code> 中其初始和销毁也不是一件简单的事情。</p>
+</blockquote>
+<ul>
+<li>继承
+<ul>
+<li>C++ 提供对类与类之间的继承关系实现 - 既基类和派生类。</li>
+<li>同 <code>class</code> 的机制一样，也提供了访问控制。如派生类只可以访问基类的 <code>public</code> 的属性和成员。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>多态
+<ul>
+<li>C++ 提供 <code>virtual</code> 关键字可以将方法定义为 virtual。 在继承体系下，如果基类对某一方法的定义为 virtual， 那么在派生类中需要对基类中的 <code>virtual</code> 方法进行重载。
+<ul>
+<li>抽象类：不可以被实例化的类，可以作为接口来约束派生类</li>
+<li>纯虚函数： 没有具体实现的虚函数，在 C++ 中一般用 <code>virutal TYPE NAME(Parameters) const = 0</code> 来表示，抽象类就是拥有纯虚函数的 <code>class</code>。</li>
+</ul>
+</li>
+<li>重载
+<ul>
+<li>函数重载：用于对已有的函数根据需求进行重实现。</li>
+<li>操作符重载： 一种特殊的函数重载形式，C++ 中的操作符运算背后调用的其实是对应形式的函数，用于描述不同对象的同一种行为具体实现的不同。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>下面是一个 C++ <code>class</code> 的组成，几乎所有的面向对象风格的代码都需要具备下面的某些部分甚至是全部。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CLASSNAME</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Constructor
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	...
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Member functions
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	...
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Operator overloading
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	...
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Destructor
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// Friend functions
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Data
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	...
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="如何才能写出一个可阅读的鲁棒性佳的面向风格的代码">如何才能写出一个可阅读的、鲁棒性佳的面向风格的代码？</h3>
+<blockquote>
+<p>当下的我不具备回答这个问题的能力理由如下：
+一是我面向对象风格的代码接触的少；
+二是我并没有实际工业界的工作经验，所以我判断目前的我不具备回答这个问题的能力。
+故用程序员的方式留下个记号，以后来回答吧 :(</p>
+</blockquote>
+<p>TODO</p>
+<h2 id="总结">总结</h2>
+<p>本文简单描述了 C++ 对面向对象这一范式提供了什么样的机制，但限于笔者水平并没有写出规划中最具“价值”的部分。此外，还有些许遗憾并没有对工程实践中常见到的设计模式进行描述。</p>
+<p>本篇用于记录笔者在看完侯捷老师的 C++ 面向对象高级编程后对面向对象的理解，如文章内容有误，欢迎联系我 :)</p>
+<h2 id="参考文献">参考文献</h2>
+<p><a href="https://cs.nju.edu.cn/lwz/OO/01.pdf">面向对象程序设计 - 南京大学</a></p>
+<p><a href="https://www.techtarget.com/searchapparchitecture/definition/object-oriented-programming-OOP#:~:text=Object%2Doriented%20programming%20(OOP)%20is%20a%20computer%20programming%20model,has%20unique%20attributes%20and%20behavior.">object-oriented programming(OOP)</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Object-oriented_programming">Object-oriented programming - wikipedia</a></p>
+<p><a href="https://en.wikipedia.org/wiki/C%2B%2B">C++ - wikipedia</a></p>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			
+		</div>
+		</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/coldinke" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a><a class="soc" href="https://twitter.com/sarvainai" rel="me" title="Twitter"><i data-feather="twitter"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2023  © Vinci |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+
+
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>
