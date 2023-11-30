@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Vinci&#39;s Blog</title>
-    <link>https://coldinke.github.io/</link>
+    <link>https://blog.v1nci.xyz/</link>
     <description>Recent content on Vinci&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <copyright>© Vinci</copyright>
     <lastBuildDate>Fri, 24 Nov 2023 17:25:13 +0800</lastBuildDate>
-    <atom:link href="https://coldinke.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.v1nci.xyz/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>C&#43;&#43; 面向对象编程简述</title>
-      <link>https://coldinke.github.io/posts/cppoop/</link>
+      <link>https://blog.v1nci.xyz/posts/cppoop/</link>
       <pubDate>Fri, 24 Nov 2023 17:25:13 +0800</pubDate>
-      <guid>https://coldinke.github.io/posts/cppoop/</guid>
+      <guid>https://blog.v1nci.xyz/posts/cppoop/</guid>
       <description>&lt;h1 id=&#34;c-面向对象编程&#34;&gt;C++ 面向对象编程&lt;/h1&gt;
 &lt;h2 id=&#34;简述面向对象编程&#34;&gt;简述面向对象编程&lt;/h2&gt;
 &lt;p&gt;面向对象编程这种范式是以**对象(Object)**为核心概念的一种编程范式，它以符合人类的思维方式和适合开发维护大型、复杂的程序而流行。许多语言最开始也基于这一编程范式而设计的，如 C++, Java, Python 等。&lt;/p&gt;
@@ -29,9 +29,9 @@
     </item>
     <item>
       <title>About</title>
-      <link>https://coldinke.github.io/about/</link>
+      <link>https://blog.v1nci.xyz/about/</link>
       <pubDate>Fri, 24 Nov 2023 16:22:20 +0800</pubDate>
-      <guid>https://coldinke.github.io/about/</guid>
+      <guid>https://blog.v1nci.xyz/about/</guid>
       <description>回看，轻舟已过万重山。</description>
     </item>
   </channel>
