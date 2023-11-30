@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Vinci&#39;s Blog</title>
-    <link>https://blog.vinci.xyz/tags/</link>
+    <link>https://coldinke.github.io/tags/</link>
     <description>Recent content in Tags on Vinci&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <copyright>© Vinci</copyright>
     <lastBuildDate>Fri, 24 Nov 2023 17:25:13 +0800</lastBuildDate>
-    <atom:link href="https://blog.vinci.xyz/tags/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://coldinke.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>C&#43;&#43;</title>
-      <link>https://blog.vinci.xyz/tags/c&#43;&#43;/</link>
+      <link>https://coldinke.github.io/tags/c&#43;&#43;/</link>
       <pubDate>Fri, 24 Nov 2023 17:25:13 +0800</pubDate>
-      <guid>https://blog.vinci.xyz/tags/c&#43;&#43;/</guid>
+      <guid>https://coldinke.github.io/tags/c&#43;&#43;/</guid>
       <description></description>
     </item>
   </channel>
