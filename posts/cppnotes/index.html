@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html><head lang="en">
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>C&#43;&#43; 面向对象程序设计 - Vinci&#39;s Blog</title><link rel="icon" type="image/png" href=https://blog-pricture.obs.cn-east-3.myhuaweicloud.com/image/Ih.jpg /><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="C&#43;&#43; 面向对象程序设计 本文是笔者学习 C&#43;&#43; 时的笔记，可能存在错误，如若发现，欢迎和笔者交流。
+Part 1: 语法基础 Object model 关于 vptr 和 vtbl vptr: virtual pointer vtbl: virtual table 前置知识：
+当子类继承父类时，除了继承了父类定义的数据和函数（包括虚函数） 继承父类的函数，实际的含义是拥有调用父类函数的调用权 下图说明了 vptr 和 vtbl 在内存中的结构：
+使用动态绑定的方式来实现多态时的前置条件：
+当前类型必须继承了一个共同的父类 （up-cast） 必须通过指针来调用 调用的函数必须是虚函数 类的设计 示例：
+class complex() { public: // Constructor ... // Member functions ... // Operator overloading ... // Destructor // Friend functions private: int re, im; } class with pointer members 必须有 copy constructor(拷贝构造函数) 和 copy op=（拷贝赋值运算符重载）" />
+	<meta property="og:image" content=""/>
+	<meta property="og:url" content="https://blog.v1nci.xyz/posts/cppnotes/">
+  <meta property="og:site_name" content="Vinci&#39;s Blog">
+  <meta property="og:title" content="C&#43;&#43; 面向对象程序设计">
+  <meta property="og:description" content="C&#43;&#43; 面向对象程序设计 本文是笔者学习 C&#43;&#43; 时的笔记，可能存在错误，如若发现，欢迎和笔者交流。
+Part 1: 语法基础 Object model 关于 vptr 和 vtbl vptr: virtual pointer vtbl: virtual table 前置知识：
+当子类继承父类时，除了继承了父类定义的数据和函数（包括虚函数） 继承父类的函数，实际的含义是拥有调用父类函数的调用权 下图说明了 vptr 和 vtbl 在内存中的结构：
+使用动态绑定的方式来实现多态时的前置条件：
+当前类型必须继承了一个共同的父类 （up-cast） 必须通过指针来调用 调用的函数必须是虚函数 类的设计 示例：
+class complex() { public: // Constructor ... // Member functions ... // Operator overloading ... // Destructor // Friend functions private: int re, im; } class with pointer members 必须有 copy constructor(拷贝构造函数) 和 copy op=（拷贝赋值运算符重载）">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-06-11T22:17:14+08:00">
+    <meta property="article:modified_time" content="2024-06-11T22:17:14+08:00">
+    <meta property="article:tag" content="C&#43;&#43;">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="C&#43;&#43; 面向对象程序设计">
+  <meta name="twitter:description" content="C&#43;&#43; 面向对象程序设计 本文是笔者学习 C&#43;&#43; 时的笔记，可能存在错误，如若发现，欢迎和笔者交流。
+Part 1: 语法基础 Object model 关于 vptr 和 vtbl vptr: virtual pointer vtbl: virtual table 前置知识：
+当子类继承父类时，除了继承了父类定义的数据和函数（包括虚函数） 继承父类的函数，实际的含义是拥有调用父类函数的调用权 下图说明了 vptr 和 vtbl 在内存中的结构：
+使用动态绑定的方式来实现多态时的前置条件：
+当前类型必须继承了一个共同的父类 （up-cast） 必须通过指针来调用 调用的函数必须是虚函数 类的设计 示例：
+class complex() { public: // Constructor ... // Member functions ... // Operator overloading ... // Destructor // Friend functions private: int re, im; } class with pointer members 必须有 copy constructor(拷贝构造函数) 和 copy op=（拷贝赋值运算符重载）">
+<script src="https://blog.v1nci.xyz/js/feather.min.js"></script>
+	
+	
+        <link href="https://blog.v1nci.xyz/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="https://blog.v1nci.xyz/css/main.ac08a4c9714baa859217f92f051deb58df2938ec352b506df655005dcaf98cc0.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="https://blog.v1nci.xyz/css/dark.726cd11ca6eb7c4f7d48eb420354f814e5c1b94281aaf8fd0511c1319f7f78a4.css" media="(prefers-color-scheme: dark)"  />
+	
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+	
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+		
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+	
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="https://blog.v1nci.xyz/">Vinci&#39;s Blog</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		<a href="/tags">Tags</a>
+		
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">C&#43;&#43; 面向对象程序设计</h1>
+			<div class="meta">Posted on Jun 11, 2024</div>
+		</div>
+		
+
+		<section class="body">
+			<h1 id="c-面向对象程序设计">C++ 面向对象程序设计</h1>
+<blockquote>
+<p>本文是笔者学习 C++ 时的笔记，可能存在错误，如若发现，欢迎和笔者交流。</p>
+</blockquote>
+<h2 id="part-1-语法基础">Part 1: 语法基础</h2>
+<h3 id="object-model">Object model</h3>
+<h4 id="关于-vptr-和--vtbl">关于 vptr 和  vtbl</h4>
+<ul>
+<li><code>vptr</code>:  virtual pointer</li>
+<li><code>vtbl</code>:  virtual table</li>
+</ul>
+<p>前置知识：</p>
+<ul>
+<li>当子类继承父类时，除了继承了父类定义的数据和函数（包括虚函数）</li>
+<li>继承父类的函数，实际的含义是拥有调用父类函数的<strong>调用权</strong></li>
+</ul>
+<p>下图说明了 vptr 和 vtbl 在内存中的结构：</p>
+<p><img src="https://vgalaxy-blog.oss-cn-nanjing.aliyuncs.com/assets/8be488e2075641bc80edcd217a436ec6.png" alt="8be488e2075641bc80edcd217a436ec6.png"></p>
+<p>使用动态绑定的方式来实现多态时的前置条件：</p>
+<ol>
+<li>当前类型必须继承了一个共同的父类 （up-cast）</li>
+<li>必须通过<strong>指针</strong>来调用</li>
+<li>调用的函数必须是虚函数</li>
+</ol>
+<h3 id="类的设计">类的设计</h3>
+<p>示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">complex</span>() 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Constructor
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	...
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Member functions
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	...
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Operator overloading
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	...
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Destructor
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// Friend functions
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> re, im;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>class with pointer members 必须有 copy constructor(拷贝构造函数) 和 copy op=（拷贝赋值运算符重载）</p>
+</blockquote>
+<h4 id="some-basic-concepts">Some basic concepts</h4>
+<h5 id="keyword">Keyword：</h5>
+<ol>
+<li><code>struct</code>
+<ul>
+<li><code>struct</code> 默认的访问级别是 <code>public</code></li>
+<li><code>struct</code> 默认的继承方式是 <code>public</code></li>
+</ul>
+</li>
+<li><code>class</code>
+<ul>
+<li><code>class</code> 默认的访问级别是 <code>private</code></li>
+<li><code>class</code> 默认的继承方式是 <code>private</code></li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>在 C 中使用结构体时需要加上 <code>struct</code> 关键字，而在 C++ 中则不需要</p>
+</blockquote>
+<ol start="3">
+<li>
+<p><code>inline</code></p>
+<ul>
+<li><code>inline</code>: 在类内部定义的函数默认是 <code>inline</code> 的</li>
+<li><code>inline</code>: 修饰的函数在编译时会被编译器直接替换到调用处，而不是像普通函数一样调用</li>
+<li>注意：<code>inline</code> 仅建议编译器内联</li>
+</ul>
+</li>
+<li>
+<p><code>static</code></p>
+<ul>
+<li>普通的 <code>static</code> 变量，声明/定义通常在一起发生（不包括扩展<code>static</code> 生命周期的情况）</li>
+<li>对于 <code>static</code> 成员变量，类的里面是<strong>声明</strong>，类的外面是定义。</li>
+<li>调用 <code>static</code> 成员函数的方式有两种：
+<ol>
+<li>通过 <code>object</code> 调用</li>
+<li>通过 CLASS NAME 调用</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+<h5 id="temp-object">temp object</h5>
+<p>临时对象，其生命周期只有使用/声明的那一行。</p>
+<p>Syntax: <code>typename(Arguments)</code></p>
+<blockquote>
+<p>在 C++ 中，临时对象绝对不可以返回其引用，因为其生命周期只有一行，当函数返回时，其所在的栈帧会被释放，故返回的引用会指向一个不存在的对象。</p>
+</blockquote>
+<h5 id="life-time-for-variables">Life time for variables</h5>
+<p>生命周期</p>
+<ol>
+<li>stack object 其生命在作用域（scope）结束后自动结束。这种作用域内的 object，又称为 auto object。</li>
+<li>static local objects 其生命在作用域（scope）結束之後仍然存在，直到整個程序結束</li>
+<li>global objects
+<ul>
+<li>其生命在整個程序結束之後才結束</li>
+<li>你也可以把它視為一種 static object，其作用域是「整個程序」</li>
+</ul>
+</li>
+<li>heap objects 其生命在它被 deleted 之际结束</li>
+</ol>
+<h5 id="about-new--delete-operations">About <code>new</code> &amp;&amp; <code>delete</code> operations</h5>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<ol>
+<li><code>new</code> operation 实际可以等价于以下三条语句</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span>String <span style="color:#f92672">*</span>ps <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String(<span style="color:#e6db74">&#34;Hello&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// |
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// v
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>mem <span style="color:#f92672">=</span> <span style="color:#66d9ef">operator</span> <span style="color:#66d9ef">new</span>( <span style="color:#66d9ef">sizeof</span>(String) );  <span style="color:#75715e">// 在 Heap 上分配内存
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>ps <span style="color:#f92672">=</span> <span style="color:#66d9ef">static_cast</span><span style="color:#f92672">&lt;</span>String<span style="color:#f92672">*&gt;</span>(mem);       <span style="color:#75715e">// 对数据类型进行转换（一般 分配器分配的内存地址类型为 void* 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>ps<span style="color:#f92672">-&gt;</span>String<span style="color:#f92672">::</span>String(<span style="color:#e6db74">&#34;Hello&#34;</span>);          <span style="color:#75715e">// 调用对应类型的构造函数
+</span></span></span></code></pre></div><ol start="2">
+<li><code>delete</code> operation 也等价于以下两条语句</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">delete</span> ps;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// |
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// v
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>String<span style="color:#f92672">::~</span>String(ps);                  <span style="color:#75715e">// 析构函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">operator</span> <span style="color:#a6e22e">delete</span>(ps);                  <span style="color:#75715e">// 释放内存
+</span></span></span></code></pre></div><ol start="3">
+<li>特殊的 <code>new</code> AND <code>delete</code> operations</li>
+</ol>
+<p>在为 array 分配连续的内存空间时，会采用 <code>new CLASS_NAME[NUM]</code> 的方式来分配连续的内存空间，其中每个“元素”的空间容量一致。注意在释放时也要使用<strong>特殊的释放操作</strong><code>delete[] VARIABLE_NAME</code> 才能正确的释放<code>new []</code> 分配出的内存。</p>
+<blockquote>
+<p>其中分配给 array 的内存能正确被释放，但因为普通的 <code>delete</code> 操作只会调用一次析构函数，会导致在 构造函数中分配的内存产生泄漏。</p>
+</blockquote>
+<ol start="4">
+<li><code>new</code> expression AND  operator <code>new</code></li>
+</ol>
+<blockquote>
+<p>前面的 new 和 delete 是作为表达式，其中分解后的动作为 operator new</p>
+</blockquote>
+<p>new 和 delete 作为表达式，不可以重载，但类类部的 <code>new</code> 和 <code>delete</code> 作为<strong>操作符</strong>，可以重载。</p>
+<p>可重载的：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">operator</span> <span style="color:#66d9ef">new</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">operator</span> <span style="color:#66d9ef">new</span>[]
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">operator</span> <span style="color:#66d9ef">delete</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">operator</span> <span style="color:#66d9ef">delete</span>[]
+</span></span></code></pre></div><p><strong>注意，重载这些操作符时不同的位置可能会有不同影响面</strong></p>
+<ol>
+<li>
+<p>类内部重载只影响当前类型（还有其子类）</p>
+</li>
+<li>
+<p>不在类内部则重载的是全局的 operator <code>new</code> 和 <code>delete</code></p>
+</li>
+<li>
+<p>Placement <code>new</code></p>
+</li>
+</ol>
+<p>在 STL 的实现中看到了这个例子的使用场景。</p>
+<p><code>basic_string</code> 使用 <code>new(extra)</code> 扩充了申请的内存容量</p>
+<p><img src="https://vgalaxy-blog.oss-cn-nanjing.aliyuncs.com/assets/d6ceb02350f74fdfb40ddf1ade410e79.png" alt="d6ceb02350f74fdfb40ddf1ade410e79.png"></p>
+<p>图中的 <code>Rep</code> 为引用计数， <code>extra</code> 存放实际的 string 内容</p>
+<p>示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">##include &lt;iostream&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">##include &lt;cstdio&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">operator</span> <span style="color:#a6e22e">new</span>(size_t size) {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">::</span>printf(<span style="color:#e6db74">&#34;global operator new with size %zu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, size);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#f92672">::</span>malloc(size);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">operator</span> <span style="color:#66d9ef">new</span>[](size_t size) {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">::</span>printf(<span style="color:#e6db74">&#34;global operator new[] with size %zu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, size);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#f92672">::</span>malloc(size);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#66d9ef">operator</span> <span style="color:#a6e22e">delete</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>ptr) <span style="color:#66d9ef">noexcept</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">::</span>printf(<span style="color:#e6db74">&#34;global operator delete with ptr %p</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, ptr);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#f92672">::</span>free(ptr);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#66d9ef">operator</span> <span style="color:#66d9ef">delete</span>[](<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>ptr, size_t size) <span style="color:#66d9ef">noexcept</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">::</span>printf(<span style="color:#e6db74">&#34;global operator delete[] with ptr %p</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, ptr);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#f92672">::</span>free(ptr);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Bad</span><span style="color:#f92672">:</span> exception
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Foo</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> id_{};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Foo() <span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">explicit</span> <span style="color:#a6e22e">Foo</span>(<span style="color:#66d9ef">int</span> id)<span style="color:#f92672">:</span> id_{id} { <span style="color:#66d9ef">throw</span> <span style="color:#a6e22e">Bad</span>(); }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">virtual</span> <span style="color:#f92672">~</span>Foo() <span style="color:#f92672">=</span> <span style="color:#66d9ef">default</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">operator</span> <span style="color:#a6e22e">new</span>(size_t size) {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">::</span>printf(<span style="color:#e6db74">&#34;member operator new with size %zu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, size);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">::</span>malloc(size);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">operator</span> <span style="color:#66d9ef">new</span>[](size_t size) {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">::</span>printf(<span style="color:#e6db74">&#34;member operator new[] with size %zu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, size);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">::</span>malloc(size);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#66d9ef">operator</span> <span style="color:#a6e22e">delete</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>ptr) {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">::</span>printf(<span style="color:#e6db74">&#34;member operator delete with ptr %p</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, ptr);
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">::</span>free(ptr);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#66d9ef">operator</span> <span style="color:#66d9ef">delete</span>[](<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>ptr) {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">::</span>printf(<span style="color:#e6db74">&#34;member operator delete[] with ptr %p</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, ptr);
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">::</span>free(ptr);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// placement new functions
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">operator</span> <span style="color:#a6e22e">new</span>(size_t size, <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>start) {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">::</span>printf(<span style="color:#e6db74">&#34;member operator new with size %zu start %p</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, size, start);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> start;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">operator</span> <span style="color:#a6e22e">new</span>(size_t size, size_t extra) {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">::</span>printf(<span style="color:#e6db74">&#34;member operator new with size %zu extra %zu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, size, extra);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">::</span>malloc(size <span style="color:#f92672">+</span> extra);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// placement delete functions
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#66d9ef">operator</span> <span style="color:#a6e22e">delete</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>ptr, <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>start) {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">::</span>printf(<span style="color:#e6db74">&#34;member operator delete with ptr %p start %p</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, ptr, start);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#66d9ef">operator</span> <span style="color:#a6e22e">delete</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>ptr, size_t extra) {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">::</span>printf(<span style="color:#e6db74">&#34;member operator delete with ptr %p extra %zu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, ptr, extra);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>foo <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">delete</span> foo;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Foo <span style="color:#f92672">*</span>foo <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Foo;
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;size: %zu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#66d9ef">sizeof</span>(Foo)); <span style="color:#75715e">// roundup(4 + 8, 8);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">delete</span> foo;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Foo <span style="color:#f92672">*</span>foo <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Foo[<span style="color:#ae81ff">4</span>];
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">delete</span>[] foo;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Foo <span style="color:#f92672">*</span>foo <span style="color:#f92672">=</span> <span style="color:#f92672">::</span><span style="color:#66d9ef">new</span> Foo[<span style="color:#ae81ff">4</span>]; <span style="color:#75715e">// global
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#f92672">::</span><span style="color:#66d9ef">delete</span>[] foo;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>ptr <span style="color:#f92672">=</span> <span style="color:#f92672">::</span>malloc(<span style="color:#66d9ef">sizeof</span>(Foo));
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// placement new expresion
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Foo <span style="color:#f92672">*</span>foo <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span>(ptr) Foo;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// not placement delete expression
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">delete</span> foo;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>ptr <span style="color:#f92672">=</span> <span style="color:#f92672">::</span>malloc(<span style="color:#66d9ef">sizeof</span>(Foo));
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>            Foo <span style="color:#f92672">*</span>foo <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span>(ptr) Foo(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span>(Bad <span style="color:#f92672">&amp;</span>bad) {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">::</span>printf(<span style="color:#e6db74">&#34;%s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, bad.what());
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>            Foo <span style="color:#f92672">*</span>foo <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span>(<span style="color:#ae81ff">4</span>) Foo(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (Bad <span style="color:#f92672">&amp;</span>bad) {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">::</span>printf(<span style="color:#e6db74">&#34;%s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, bad.what());
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>注意，无法直接调用 placement delete function, placement delete function 仅用于当调用 placement new function 在其使用构造函数构造其内存结构发生异常时，为了防止内存泄漏时，才会调用 placement delete function</p>
+<p>另外， 对于 operator delete 的重载，其 <code>size_t</code> 的参数为可选。</p>
+<p>!TODO</p>
+<h5 id="namespace"><code>namespace</code></h5>
+<ul>
+<li>using directive</li>
+</ul>
+<p><code>using namespace std;</code></p>
+<ul>
+<li>using declaration</li>
+</ul>
+<p><code>using std::cout; </code></p>
+<h4 id="constructor">Constructor</h4>
+<p>什么情况下会调用构造函数，而不是赋值函数：</p>
+<ul>
+<li>左值对象已经存在则调用的是<strong>赋值操作符</strong></li>
+<li>左值对象在当前语句才<strong>声明</strong>，并使用赋值符号想赋值给左值，使用的是<strong>拷贝构造函数</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span>complex()<span style="color:#f92672">:</span> re(<span style="color:#ae81ff">0</span>), im(<span style="color:#ae81ff">0</span>) { }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Constructor_Name(Arguments): Initializer { Assignment }
+</span></span></span></code></pre></div><ol start="3">
+<li>设计模式： <a href="#singleton">Singleton 设计模式</a></li>
+</ol>
+<blockquote>
+<p>Constructor 的作用在我看来是将“混乱的内存空间” 组织为 “有意义的结构化数据”
+注意 <a href="#new&amp;&amp;delete">New</a> 部分的内容</p>
+</blockquote>
+<h4 id="destructor">Destructor</h4>
+<p>析构函数： <code>~complex() { }</code></p>
+<ol>
+<li>在对 <code>class object</code> 使用 <code>new</code> 操作时会调用其构造函数，在遇到 <code>delete</code> 时会调用其析构函数</li>
+</ol>
+<h4 id="member-functions">member functions</h4>
+<p>一个类里的函数可分为两类：</p>
+<ul>
+<li>const member functions: <strong>一定不会改变</strong>类中的数据成员，使用 <code>const</code> 关键字修饰</li>
+<li>non-const member functions: <strong>可能会改变</strong>类中的数据成员, 不使用 <code>const</code> 关键字修饰</li>
+</ul>
+<p>示例：</p>
+<p>对于一个 <code>const</code> 类型的数据（其类的设计者并没有提供 <code>const</code> overloading version），则会在编译过程中出现如下错误：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>complex_test.cpp:7:13: error: <span style="color:#e6db74">&#39;this&#39;</span> argument to member <span style="color:#66d9ef">function</span> <span style="color:#e6db74">&#39;real&#39;</span> has type <span style="color:#e6db74">&#39;const complex&#39;</span>, but <span style="color:#66d9ef">function</span> is not marked const
+</span></span><span style="display:flex;"><span>    cout <span style="color:#e6db74">&lt;&lt; c1.real() &lt;&lt; endl;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            ^~
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">./c</span>omplex.h:11:12: note: <span style="color:#e6db74">&#39;real&#39;</span> declared here
+</span></span><span style="display:flex;"><span>    double real<span style="color:#f92672">()</span> <span style="color:#f92672">{</span> <span style="color:#66d9ef">return</span> re; <span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>故这类问题需要<strong>设计人员</strong>的必须保证的点，否则会出现 <code>undefined behavior</code></p>
+</blockquote>
+<p>补充：</p>
+<p>When const and non-const versions of a member function are both available:</p>
+<ul>
+<li>const object only call const version</li>
+<li>non-const object only call non-const version</li>
+</ul>
+<p>When only the const version or the non-const version of a member function is available:</p>
+<ul>
+<li>const object only call const version (You can refer to the example above)</li>
+<li>non-const object call non-const version and const version</li>
+</ul>
+<p><strong>The keyword <code>const</code> is part of the function signature</strong>, allowing you to overload a function by adding or removing the <code>const</code> keyword.</p>
+<h4 id="friend-functions">Friend functions</h4>
+<ol>
+<li>被定义为某一 <code>class</code> 的 friend 函数，可以自由地访问相应 <code>class</code> 的 <code>private</code> 区域的变量和方法</li>
+<li>同一 <code>class</code> 类型的 Objects 互为 friends members (可以自由的访问对应 Object 的变量和方法)</li>
+</ol>
+<p>Syntax: <code>friend typename Function_Name (typename&amp; Param) { }</code></p>
+<p>示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">complex</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	complex (<span style="color:#66d9ef">double</span> r <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, <span style="color:#66d9ef">double</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) <span style="color:#f92672">:</span> re(r), im(i) { }
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">func</span>(<span style="color:#66d9ef">const</span> complex<span style="color:#f92672">&amp;</span> param) { <span style="color:#66d9ef">return</span> param.re <span style="color:#f92672">+</span> param.im; }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="操作符重载">操作符重载</h3>
+<p>在 <code>C++</code> 中可以视操作符为一个函数，对于几种常用的操作符做一些解析：</p>
+<ul>
+<li>二元操作符号： <code>X + Y</code> -&gt; <code>typename operator + (const typename&amp; lhs, const typename&amp; rhs)</code></li>
+<li>一元操作符：<code>- Y</code> -&gt; <code>typename operator - (const typename&amp; rhs )</code></li>
+</ul>
+<p>对于类似于以下的函数设计，不能 return by value 的原因是在其最后的结果是个 Local variable/object，当退出函数的作用域后其所在的栈帧会被释放。</p>
+<ol>
+<li>Operator overloading (non-member function)  <strong>No this</strong></li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span>ostream<span style="color:#f92672">&amp;</span> 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">operator</span> <span style="color:#f92672">&lt;&lt;</span> (ostream<span style="color:#f92672">&amp;</span> os, <span style="color:#66d9ef">const</span> complex<span style="color:#f92672">&amp;</span> x)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> os <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#39;(&#39;</span> <span style="color:#f92672">&lt;&lt;</span> x.real() <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#39;,&#39;</span> <span style="color:#f92672">&lt;&lt;</span> x.imag() <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#39;)&#39;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ol start="2">
+<li>Operator overloading (member function) <strong>Have this</strong></li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> complex<span style="color:#f92672">&amp;</span>
+</span></span><span style="display:flex;"><span>__doapl(complex<span style="color:#f92672">*</span> ths, <span style="color:#66d9ef">const</span> complex<span style="color:#f92672">&amp;</span> r)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	ths<span style="color:#f92672">-&gt;</span>re <span style="color:#f92672">+=</span> r.re;
+</span></span><span style="display:flex;"><span>	ths<span style="color:#f92672">-&gt;</span>im <span style="color:#f92672">+=</span> r.im;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">*</span>ths;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> complex<span style="color:#f92672">&amp;</span>
+</span></span><span style="display:flex;"><span>complex<span style="color:#f92672">::</span><span style="color:#66d9ef">operator</span> <span style="color:#f92672">+=</span> (<span style="color:#66d9ef">const</span> complex<span style="color:#f92672">&amp;</span> r)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">__doapl</span>(<span style="color:#66d9ef">this</span>, r);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>从以上的例子来看常见的操作符重载可分为以下两类：</p>
+<ul>
+<li>成员函数(存在隐式 this 指针，指向当前对象的“右边”部分)</li>
+<li>非成员函数(不存在隐式 this)</li>
+</ul>
+<blockquote>
+<p>在对 <code>ostream</code> 进行操作时，其返回值为 <code>ostream&amp;</code> 的原因是为了实现 <code>cout &lt;&lt; a &lt;&lt; b &lt;&lt; c</code> 的链式操作
+其他测试并没有发现必须 return by reference 的情况</p>
+</blockquote>
+<h3 id="object-oriented-programming-object-oriented-design">Object Oriented Programming (Object Oriented Design)</h3>
+<p>常见的三种设计范式：</p>
+<ul>
+<li>Inheritance (继承)</li>
+<li>Composition （复合）</li>
+<li>Delegation （委托）</li>
+</ul>
+<h4 id="inheritance">Inheritance</h4>
+<p>The capability of a class to derive properties and characteristics from another class is called <strong>Inheritance</strong>.</p>
+<blockquote>
+<p>为了能正确的调用对象的析构函数，一般要求具有层次结构的顶级类定义其析构函数为虚函数。因为<strong>在delete一个抽象类指针时候，必须要通过虚函数找到真正的析构函数</strong></p>
+</blockquote>
+<p>示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">##include &lt;iostream&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span> 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    A() { cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;A::A(int)&#34;</span> <span style="color:#f92672">&lt;&lt;</span> endl; }
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">~</span>A() { cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;A::~A()&#34;</span> <span style="color:#f92672">&lt;&lt;</span> endl; }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> A
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    B() { cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;B:B(int)&#34;</span> <span style="color:#f92672">&lt;&lt;</span> endl; }
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">~</span>B() { cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;B::~B()&#34;</span> <span style="color:#f92672">&lt;&lt;</span> endl; }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    A <span style="color:#f92672">*</span>ptrA <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> B;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">delete</span> ptrA;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// output
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>A<span style="color:#f92672">::</span>A()
+</span></span><span style="display:flex;"><span>B:B()
+</span></span><span style="display:flex;"><span>A<span style="color:#f92672">::~</span>A()
+</span></span></code></pre></div><p>其正确的析构顺序应该为 <code>~B() -&gt; ~A()</code> 将 <code>base class</code> 的 析构函数定义为 <code>virtual</code> 就能得到预期的结果。</p>
+<p>Inheritance 的抽象结构/内存结构</p>
+<p><img src="https://blog-pricture.obs.cn-east-3.myhuaweicloud.com/image/Drawing%202023-10-19%2010.38.23.excalidraw.svg" alt="Drawing 2023-10-19 10.38.23.excalidraw.svg"></p>
+<h5 id="继承的方式">继承的方式：</h5>
+<ol>
+<li><code>public</code>: 将基类的公有成员变为自己的公有成员，基类的保护成员变为自己的保护成员</li>
+<li><code>protected</code>: 将基类的公有成员和保护成员变为自己的保护成员</li>
+<li><code>private</code>: 将基类的公有成员和保护成员变为自己的私有成员</li>
+</ol>
+<h5 id="继承体系下的构造和析构">继承体系下的构造和析构：</h5>
+<ol>
+<li>
+<p>构造有内而外
+Derived 的构造函数首先调用 Base 的 default 构造函数，然后才执行自己</p>
+</li>
+<li>
+<p>析构由外而内
+Derived 的析构函数先执行自己，然后才调用 Base 的析构函数</p>
+</li>
+</ol>
+<h5 id="inheritance-with-virtual">Inheritance with virtual</h5>
+<ul>
+<li>non-virtual 函数： 你不希望 derived class override 对应的函数</li>
+<li>virtual 函数：你希望 derived class override 对应的函数，且你对它已有默认的定义</li>
+<li>pure virtual 函数： 你要求 derived class 一定要 override 对应的函数，并且你对它没有默认的定义</li>
+</ul>
+<h5 id="虚继承和虚基类详解">虚继承和虚基类详解</h5>
+<h4 id="composition">Composition</h4>
+<p>Composition if referred to building a complex thing with the use of smaller and simple parts.</p>
+<p>Composition 的抽象结构/内存结构
+<img src="https://blog-pricture.obs.cn-east-3.myhuaweicloud.com/image/Drawing%202023-10-19%2011.03.35.excalidraw.svg" alt="Drawing 2023-10-19 11.03.35.excalidraw.svg"></p>
+<p>Composition: 表示 has-a 的关系</p>
+<p>Composition 关系下的构造和析构：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>Container has-a Component 
+</span></span></code></pre></div><ol>
+<li>
+<p>构造由内而外：
+Container 的构造函数先调用 Component 的 default 构造函数，然后再执行自己。</p>
+</li>
+<li>
+<p>析构由外而内：
+Container 的析构函数首先执行自己，然后才调用 Component 的析构函数</p>
+</li>
+</ol>
+<h4 id="delegation">Delegation</h4>
+<p>Object Delegation means using the object of another class as a class member of another class. It is know as object delegation.</p>
+<h4 id="变种-">变种 ？</h4>
+<h5 id="inheritance--composition">Inheritance + Composition</h5>
+<p>Inheritance + Composition 的抽象结构/内存结构</p>
+<p><img src="https://blog-pricture.obs.cn-east-3.myhuaweicloud.com/image/Drawing%202023-10-19%2011.03.35.excalidraw.svg" alt="Drawing 2023-10-19 11.03.35.excalidraw.svg"></p>
+<h5 id="delegation--inheritance">Delegation + Inheritance</h5>
+<h4 id="something-like-class">SOMETHING-like class</h4>
+<h5 id="pointer-like-classes">Pointer-like classes</h5>
+<p>**重载运算符 <code>*</code> 和 <code>-&gt;</code> **</p>
+<p>关于智能指针</p>
+<p>示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">T</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">shared_ptr</span> 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	T<span style="color:#f92672">&amp;</span> <span style="color:#66d9ef">operator</span><span style="color:#f92672">*</span>() <span style="color:#66d9ef">const</span> 
+</span></span><span style="display:flex;"><span>	{ <span style="color:#66d9ef">return</span> <span style="color:#f92672">*</span>px;  }
+</span></span><span style="display:flex;"><span>	T<span style="color:#f92672">*</span> <span style="color:#66d9ef">operator</span><span style="color:#f92672">-&gt;</span>() <span style="color:#66d9ef">const</span> 
+</span></span><span style="display:flex;"><span>	{ <span style="color:#66d9ef">return</span> px;   }
+</span></span><span style="display:flex;"><span>	shared_ptr(T<span style="color:#f92672">*</span> p) <span style="color:#f92672">:</span> ps(p) { }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	T<span style="color:#f92672">*</span> px;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">long</span><span style="color:#f92672">*</span> pn;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><img src="https://vgalaxy-blog.oss-cn-nanjing.aliyuncs.com/assets/dd6b654c247b42aa88b9be9e467ce55a.png" alt="dd6b654c247b42aa88b9be9e467ce55a.png"></p>
+<p>注意此处 <code>-&gt;</code> 被消耗后仍然存在，这是规定。</p>
+<p>关于迭代器</p>
+<p>示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span>reference <span style="color:#66d9ef">operator</span><span style="color:#f92672">*</span>() <span style="color:#66d9ef">const</span> 
+</span></span><span style="display:flex;"><span>{ <span style="color:#66d9ef">return</span> (<span style="color:#f92672">*</span>node).data; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>reference <span style="color:#66d9ef">operator</span><span style="color:#f92672">-&gt;</span>() <span style="color:#66d9ef">const</span> 
+</span></span><span style="display:flex;"><span>{ <span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span>(<span style="color:#66d9ef">operator</span><span style="color:#f92672">*</span>()); }
+</span></span></code></pre></div><p><img src="https://vgalaxy-blog.oss-cn-nanjing.aliyuncs.com/assets/60262abeb1f2496aa985c59e923561e3.png" alt="60262abeb1f2496aa985c59e923561e3.png"></p>
+<h5 id="function-like-casses">function-like casses</h5>
+<p><strong>仿函数， 函数对象： 重载运算符<code>()</code></strong></p>
+<p>示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">T</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">identity</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">const</span> T<span style="color:#f92672">&amp;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">operator</span>() (<span style="color:#66d9ef">const</span> T<span style="color:#f92672">&amp;</span> x) <span style="color:#66d9ef">const</span> { <span style="color:#66d9ef">return</span> x; }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Pair</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">select1st</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">typename</span> Pair<span style="color:#f92672">::</span>first_type<span style="color:#f92672">&amp;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">operator</span>() (<span style="color:#66d9ef">const</span> Pair<span style="color:#f92672">&amp;</span> x) <span style="color:#66d9ef">const</span>
+</span></span><span style="display:flex;"><span>	{ <span style="color:#66d9ef">return</span> x.first; }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Pair</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">select2nd</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">typename</span> Pair<span style="color:#f92672">::</span>second_type<span style="color:#f92672">&amp;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">operator</span>() (<span style="color:#66d9ef">const</span> Pair<span style="color:#f92672">&amp;</span> x) <span style="color:#66d9ef">const</span> 
+</span></span><span style="display:flex;"><span>	{ <span style="color:#66d9ef">return</span> x.second; }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">##include &lt;iostream&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">T1</span>, <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">T2</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">pair</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">typedef</span> T1  first_type;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">typedef</span> T2  second_type;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	T1 first;
+</span></span><span style="display:flex;"><span>	T2 second;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	pair() <span style="color:#f92672">:</span> first(T1()), second(T2()) {}
+</span></span><span style="display:flex;"><span>	pair(<span style="color:#66d9ef">int</span> a, <span style="color:#66d9ef">int</span> b)<span style="color:#f92672">:</span> first(T1(a)), second(T2(b)) {}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// function-like class
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Pair</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">select1st</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">typename</span> Pair<span style="color:#f92672">::</span>first_type <span style="color:#f92672">&amp;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">operator</span>()(<span style="color:#66d9ef">const</span> Pair <span style="color:#f92672">&amp;</span>x) <span style="color:#66d9ef">const</span> { <span style="color:#66d9ef">return</span> x.first; }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">using</span> P <span style="color:#f92672">=</span> pair<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span>, <span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span>;
+</span></span><span style="display:flex;"><span>	P p(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>	std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> select1st<span style="color:#f92672">&lt;</span>P<span style="color:#f92672">&gt;</span>()(p);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="template">Template</h3>
+<h4 id="class-template">class template</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">complex</span> {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	complex(T r <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, T i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>) <span style="color:#f92672">:</span> re(r), im(i) {}
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	complex <span style="color:#f92672">&amp;</span><span style="color:#66d9ef">operator</span><span style="color:#f92672">+=</span>(<span style="color:#66d9ef">const</span> complex <span style="color:#f92672">&amp;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	T <span style="color:#a6e22e">real</span>() <span style="color:#66d9ef">const</span> { <span style="color:#66d9ef">return</span> re; }
+</span></span><span style="display:flex;"><span>	T <span style="color:#a6e22e">imag</span>() <span style="color:#66d9ef">const</span> { <span style="color:#66d9ef">return</span> im; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	T re, im;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	firend complex <span style="color:#f92672">&amp;</span>__doapl(complex <span style="color:#f92672">*</span>, <span style="color:#66d9ef">const</span> complex <span style="color:#f92672">&amp;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="function-template">function template</h4>
+<ol>
+<li>non-member function template</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">T</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> T<span style="color:#f92672">&amp;</span> min(<span style="color:#66d9ef">const</span> T<span style="color:#f92672">&amp;</span> a, <span style="color:#66d9ef">const</span> T<span style="color:#f92672">&amp;</span> b) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> b <span style="color:#f92672">&lt;</span> a <span style="color:#f92672">?</span> b : a;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ol start="2">
+<li>member function template</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">##include &lt;cstdio&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">T1</span>, <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">T2</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">pair</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">typedef</span> T1 first_type;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">typedef</span> T2 second_type;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    T1 first;
+</span></span><span style="display:flex;"><span>    T2 second;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    pair() <span style="color:#f92672">:</span> first(T1()), second(T2()) {}
+</span></span><span style="display:flex;"><span>    pair(<span style="color:#66d9ef">const</span> T1 <span style="color:#f92672">&amp;</span>a, <span style="color:#66d9ef">const</span> T2 <span style="color:#f92672">&amp;</span>b) <span style="color:#f92672">:</span> first(a), second(b) {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">U1</span>, <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">U2</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">explicit</span> pair(<span style="color:#66d9ef">const</span> pair<span style="color:#f92672">&lt;</span>U1, U2<span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>p) <span style="color:#f92672">:</span> first(p.first), second(p.second) {}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Base1</span> {};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Base2</span> {}; 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Derived1</span> <span style="color:#f92672">:</span> Base1 {};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Derived2</span> <span style="color:#f92672">:</span> Base2 {};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    pair<span style="color:#f92672">&lt;</span>Derived1, Derived2<span style="color:#f92672">&gt;</span> p1;
+</span></span><span style="display:flex;"><span>    pair<span style="color:#f92672">&lt;</span>Base1, Base2<span style="color:#f92672">&gt;</span> p2(p1);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>这种结构通常用于实现<strong>子类到父类</strong>的转换，这类类型转换一般称为 <code>up-cast</code></p>
+<p><img src="https://vgalaxy-blog.oss-cn-nanjing.aliyuncs.com/assets/f81155934f0d4f4c8c39c30f19441171.png" alt="f81155934f0d4f4c8c39c30f19441171.png"></p>
+<h4 id="specialization-模版特化">Specialization 模版特化</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">##include &lt;cstddef&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Key</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">hash</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">hash</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">char</span><span style="color:#f92672">&gt;</span> { 
+</span></span><span style="display:flex;"><span>	size_t <span style="color:#a6e22e">operator</span>()(<span style="color:#66d9ef">char</span> x) <span style="color:#66d9ef">const</span> { <span style="color:#66d9ef">return</span> x; }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">hash</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> {
+</span></span><span style="display:flex;"><span>	size_t <span style="color:#a6e22e">operator</span>()(<span style="color:#66d9ef">char</span> x) <span style="color:#66d9ef">const</span> { <span style="color:#66d9ef">return</span> x; }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">hash</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">long</span><span style="color:#f92672">&gt;</span> {
+</span></span><span style="display:flex;"><span>	size_t <span style="color:#a6e22e">operator</span>()(<span style="color:#66d9ef">char</span> x) <span style="color:#66d9ef">const</span> { <span style="color:#66d9ef">return</span> x; }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>上述代码实现针对<code>char</code>、 <code>int</code> 和 <code>long</code> 这三个数据类型的 hash 使用指定代码， 其他数据类型使用前面定义的模版板块的代码。</p>
+<h4 id="partial-specialization-模版偏特化">Partial specialization 模版偏特化</h4>
+<p>流行的偏特化方式一般是如下两种：</p>
+<ol>
+<li>数量，数量上的 “偏”</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">##include &lt;iostream&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T, <span style="color:#66d9ef">typename</span> Alloc<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">vector</span> {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    vector() { std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;typename T, typename Alloc&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl; }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> Alloc<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">vector</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">bool</span>, Alloc<span style="color:#f92672">&gt;</span> {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 指定了第一个类型参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    vector() { std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;bool, typename Alloc&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl; }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">char</span>, <span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> t;
+</span></span><span style="display:flex;"><span>    vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span>, <span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> b;
+</span></span><span style="display:flex;"><span>    vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">bool</span>, <span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> c;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ol start="2">
+<li>范围，范围上的 “偏”</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">##include &lt;string&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">##include &lt;iostream&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> std<span style="color:#f92672">::</span>string;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">C</span> {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    C() { std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;T()&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl; }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">C</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">*&gt;</span> {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 指定了类型参数的类型为指针类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    C() { std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;T*()&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl; }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    C<span style="color:#f92672">&lt;</span>string<span style="color:#f92672">&gt;</span> obj1;
+</span></span><span style="display:flex;"><span>    C<span style="color:#f92672">&lt;</span>string<span style="color:#f92672">*&gt;</span> obj2;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h5 id="template-template-parameter-模版---模版参数">template template parameter 模版 - 模版参数</h5>
+<p>这是用于当一个模版的参数类型是<strong>模版</strong>时的特殊用法，如</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T, <span style="color:#66d9ef">typename</span> Cont <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">stack</span> {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	Cont elems; <span style="color:#75715e">// elements
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// ......
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>};
+</span></span></code></pre></div><p>// 实例化</p>
+<p><code>stack&lt;int, std::vector&lt;int&gt;&gt; intStack;</code></p>
+<p>能不能简化其实例化的用法？ 成为以下的形式：</p>
+<p><code>stack&lt;int, std::deque&gt; intStack; </code></p>
+<p>显然是可以的，使用模版的模版参数，声明形式如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T, <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> Elem<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Cont</span> <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">stack</span> {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	Cont<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> elems;   <span style="color:#75715e">// elements
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// ......
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>};
+</span></span></code></pre></div><blockquote>
+<p>注意在 C++17 后， 模版的模版参数中的关键字 class 也可以替换成 typename</p>
+</blockquote>
+<p>候捷老师给出的示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T,
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Container</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">XCls</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	Container<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> c;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	...
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Lst <span style="color:#f92672">=</span> list<span style="color:#f92672">&lt;</span>T, allocator<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;&gt;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// compile error
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>XCls<span style="color:#f92672">&lt;</span>string, list<span style="color:#f92672">&gt;</span> mylst1;
+</span></span><span style="display:flex;"><span>XCls<span style="color:#f92672">&lt;</span>stirng, Lst<span style="color:#f92672">&gt;</span> mylst2;
+</span></span></code></pre></div><p>当类模版可以作为模版参数时，我们在声明 stack 类模版只需要指定容器的类型而不用指定容器中元素的类型。</p>
+<p>一个完整的示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">##include &lt;iostream&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">##include &lt;vector&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">##include &lt;deque&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">##include &lt;cassert&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T,
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> Elem,
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">typename</span> <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>allocator<span style="color:#f92672">&lt;</span>Elem<span style="color:#f92672">&gt;&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Cont</span> <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>deque<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">stack</span> {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    Cont<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> elems; <span style="color:#75715e">// elements
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> push(T <span style="color:#66d9ef">const</span> <span style="color:#f92672">&amp;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">pop</span>();
+</span></span><span style="display:flex;"><span>    T <span style="color:#66d9ef">const</span> <span style="color:#f92672">&amp;</span>top() <span style="color:#66d9ef">const</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">[[nodiscard]]</span> <span style="color:#66d9ef">bool</span> empty() <span style="color:#66d9ef">const</span> { <span style="color:#66d9ef">return</span> elems.empty(); }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T2,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> Elem2,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">typename</span> <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>allocator<span style="color:#f92672">&lt;</span>Elem2<span style="color:#f92672">&gt;&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Cont2</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    stack<span style="color:#f92672">&lt;</span>T, Cont<span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span><span style="color:#66d9ef">operator</span><span style="color:#f92672">=</span>(stack<span style="color:#f92672">&lt;</span>T2, Cont2<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">const</span> <span style="color:#f92672">&amp;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span>, <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span>, <span style="color:#66d9ef">typename</span><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">class</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">friend</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">stack</span>;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T, <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span>, <span style="color:#66d9ef">typename</span><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Cont</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> stack<span style="color:#f92672">&lt;</span>T, Cont<span style="color:#f92672">&gt;::</span>push(T <span style="color:#66d9ef">const</span> <span style="color:#f92672">&amp;</span>elem) {
+</span></span><span style="display:flex;"><span>    elems.push_back(elem);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T, <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span>, <span style="color:#66d9ef">typename</span><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Cont</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> stack<span style="color:#f92672">&lt;</span>T, Cont<span style="color:#f92672">&gt;::</span>pop() {
+</span></span><span style="display:flex;"><span>    assert(<span style="color:#f92672">!</span>elems.empty());
+</span></span><span style="display:flex;"><span>    elems.pop_back();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T, <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span>, <span style="color:#66d9ef">typename</span><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Cont</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>T <span style="color:#66d9ef">const</span> <span style="color:#f92672">&amp;</span>stack<span style="color:#f92672">&lt;</span>T, Cont<span style="color:#f92672">&gt;::</span>top() <span style="color:#66d9ef">const</span> {
+</span></span><span style="display:flex;"><span>    assert(<span style="color:#f92672">!</span>elems.empty());
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> elems.back();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T, <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span>, <span style="color:#66d9ef">typename</span><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Cont</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T2, <span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span>, <span style="color:#66d9ef">typename</span><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Cont2</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>stack<span style="color:#f92672">&lt;</span>T, Cont<span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>stack<span style="color:#f92672">&lt;</span>T, Cont<span style="color:#f92672">&gt;::</span><span style="color:#66d9ef">operator</span><span style="color:#f92672">=</span>(stack<span style="color:#f92672">&lt;</span>T2, Cont2<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">const</span><span style="color:#f92672">&amp;</span> rhs) {
+</span></span><span style="display:flex;"><span>    elems.clear();
+</span></span><span style="display:flex;"><span>    elems.insert(elems.begin(),
+</span></span><span style="display:flex;"><span>                rhs.elems.begin(),
+</span></span><span style="display:flex;"><span>                rhs.elems.end());
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">this</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    stack<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> istack;
+</span></span><span style="display:flex;"><span>    stack<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">float</span><span style="color:#f92672">&gt;</span> fstack;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    istack.push(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>    istack.push(<span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;istack.top(): &#34;</span> <span style="color:#f92672">&lt;&lt;</span> istack.top() <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#39;\n&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// manipulate float stack
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    fstack.push(<span style="color:#ae81ff">3.3</span>);
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;fstack.top(): &#34;</span> <span style="color:#f92672">&lt;&lt;</span> fstack.top() <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#39;\n&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// assign stack of different type and manipulate again
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    fstack <span style="color:#f92672">=</span> istack;
+</span></span><span style="display:flex;"><span>    fstack.push(<span style="color:#ae81ff">4.4</span>);
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;fstack.top(): &#34;</span> <span style="color:#f92672">&lt;&lt;</span> fstack.top() <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#39;\n&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// stack for doubles using a vector as an internal container
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    stack<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span>, std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&gt;</span> vstack;
+</span></span><span style="display:flex;"><span>    vstack.push(<span style="color:#ae81ff">5.5</span>);
+</span></span><span style="display:flex;"><span>    vstack.push(<span style="color:#ae81ff">6.6</span>);
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;vstack.top(): &#34;</span> <span style="color:#f92672">&lt;&lt;</span> vstack.top() <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#39;\n&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    vstack <span style="color:#f92672">=</span> fstack;
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;vstack: &#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> (<span style="color:#f92672">!</span>vstack.empty()) {
+</span></span><span style="display:flex;"><span>        std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> vstack.top() <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#39; &#39;</span>;
+</span></span><span style="display:flex;"><span>        vstack.pop();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#39;\n&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><hr>
+<h2 id="part-2-语义方面">Part 2: 语义方面</h2>
+<h3 id="this-pointer"><code>this</code> pointer</h3>
+<ol>
+<li>类中的<strong>成员函数</strong>都有一个<strong>隐式的 <code>this</code> 指针</strong>，粗俗的说，<code>this</code> 指针指向当前对象的“右边”部分</li>
+<li>对成员函数的调用会添加<code>this-&gt;</code> 指针，从而产生<a href="#dynamic-binding">Dynamic Binding</a>的效果</li>
+</ol>
+<blockquote>
+<p>注意： 在 operator overloading 中， 有两种情况：</p>
+<ol>
+<li>一种是成员函数，此时 <code>this</code> 指针指向的是左边的对象</li>
+<li>一种是非成员函数，此时并没有 <code>this</code> 指针，故需要显式的传入参数</li>
+</ol>
+</blockquote>
+<h3 id="dynamic-binding-and-static-binding">Dynamic Binding and Static Binding</h3>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<ul>
+<li>
+<p>指在对程序中的 <code>class</code> 对象进行操作时，其调用的函数是在<strong>运行时</strong>才确定的，还是在<strong>编译时</strong>就可以确定方法的调用。</p>
+</li>
+<li>
+<p>对于虚成员函数，调用时根据隐式的 <code>this</code> 指针找到对应的虚表中具体的调用目标（函数）相当于将函数调用翻译成 <code>(*(p-&gt;vptr)[n])(p)</code></p>
+</li>
+</ul>
+<h4 id="dynamic-binding">Dynamic Binding</h4>
+<p>动态绑定的解析路线（通过指针调用虚函数）</p>
+<p>通过指针找到 virtual pointer，再通过 virtual pointer 找到 virtual table ，然后找到对应的函数。</p>
+<h4 id="static-binding">Static Binding</h4>
+<ul>
+<li>
+<p>静态绑定是直接在 <code>call</code> 时，已经知道目标函数的地址，在之后完 <code>call</code> 后 PC 寄存器就已经存在再目标函数地址的区域。</p>
+</li>
+<li>
+<p>对于一般的非虚成员函数，其在“内存”中的地址是固定的，编译过程中编译器只需将函数译码为对应的 <code>call + TARGET_ADDRESS</code> 的指令即可。</p>
+</li>
+</ul>
+<h3 id="object-based-vs-object-oriented">Object Based vs. Object Oriented</h3>
+<ul>
+<li>Object Based: 面对的是单一 class 的设计</li>
+<li>Object Oriented: 面对的是多重 classes 的设计， classes 和 classes 之间的关系</li>
+</ul>
+<h3 id="access-level">Access level</h3>
+<p>在 C++ 中使用以下关键字来修饰成员变量和成员函数的访问级别：</p>
+<ol>
+<li><code>public</code>：
+<ul>
+<li>一般来讲对于函数而言，我们需要对外界开放，所以一般定义为 public 级别的</li>
+</ul>
+</li>
+<li><code>private</code>：
+<ul>
+<li>一般来讲对于数据而言，我们需要对外界隐藏，所以一般定义为 private 级别的</li>
+</ul>
+</li>
+<li><code>protect</code>：
+<ul>
+<li>派生类的成员函数可以访问基类的保护成员</li>
+</ul>
+</li>
+</ol>
+<h3 id="arguments-passing-and-return-value-passing">Arguments passing and return value passing</h3>
+<h4 id="arguments-passing">Arguments passing:</h4>
+<p>因为引用传递参数和值传递参数对使用者来说是透明的，所以使用者不需要知道接受者是以 <strong>reference</strong> 方式接受还是以 <strong>value</strong> 方式接受。</p>
+<blockquote>
+<p>但在函数重载中，编译器无法区分两个函数的区别，即两个函数的函数签名相同，故不能同时存在</p>
+</blockquote>
+<ul>
+<li>
+<p>Pass by value</p>
+<ul>
+<li>如果声明中不存在符号 <code>&amp;</code> 则表明使用 Value 传参 （从语义的角度来看是使用 Copy 来处理）</li>
+</ul>
+</li>
+<li>
+<p>Pass by reference(to const)</p>
+<ul>
+<li>如果函数声明中存在 <code>const</code> 就是具体的 <code>pass by reference to const</code>
+<ul>
+<li>对于 <code>pass by reference to const</code> 而言，其函数签名为：
+<code>ReturnType FunctionName (const Type&amp; Param) { }</code></li>
+</ul>
+</li>
+<li>否则就是 <code>pass by reference</code>
+<ul>
+<li>在函数内部对数据的操作会反映到调用者的数据上，故其函数签名为：
+<code>ReturnType FunctionName (Type&amp; Param) { }</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="返回值传递">返回值传递：</h4>
+<ul>
+<li>return by value</li>
+<li>return by reference (to const)</li>
+</ul>
+<p>与指针对比</p>
+<ul>
+<li>若返回值类型为 pointer，则必须返回一个 pointer</li>
+<li>若返回值类型为 reference， 可以返回一个 object， 也可返回一个 reference</li>
+</ul>
+<h3 id="conversion-function-转换函数"><code>conversion function</code> 转换函数</h3>
+<p>将类类型转换为其他类型（基本类型、类类型）：</p>
+<p>故其为成员函数，实际使用重载运算符来实现（存在 <code>this</code> 的操作符号重栽）</p>
+<p>Syntax： <code>operator TYPE() const { ... }</code></p>
+<p>通常意义上 conversion function 不应该改变原数据的大小，只是单纯做类型转换（即改变其数据的存储结构）</p>
+<p>示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">// Fraction.h
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Fraction</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    Fraction(<span style="color:#66d9ef">int</span> num, <span style="color:#66d9ef">int</span> den)<span style="color:#f92672">:</span> m_numerator(num), m_denominator(den) {}
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">operator</span> <span style="color:#a6e22e">double</span>() <span style="color:#66d9ef">const</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> (<span style="color:#66d9ef">double</span>)m_numerator <span style="color:#f92672">/</span> m_denominator;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> m_numerator;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> m_denominator;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// test_Example.cc
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">##include &#34;Fraction.h&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">##include &lt;cassert&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Use (void) to silence unused warnings.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">##define assertm(exp, msg) assert(((void)msg, exp))
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    Fraction f(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">5</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">double</span> d <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">+</span> f;
+</span></span><span style="display:flex;"><span>    assert(d <span style="color:#f92672">==</span> <span style="color:#ae81ff">6.0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>上面的示例是将 Fraction 类型转换为 double 类型，然后实现运算。</p>
+<h5 id="non-explicit-one-argument-constructor">non-explicit-one-argument constructor</h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">// Fraction.h
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Fraction</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// One-argument constructor 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    Fraction(<span style="color:#66d9ef">int</span> num, <span style="color:#66d9ef">int</span> den<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">:</span> m_numerator(num), m_denominator(den) {}
+</span></span><span style="display:flex;"><span>    Fraction <span style="color:#66d9ef">operator</span><span style="color:#f92672">+</span>(<span style="color:#66d9ef">const</span> Fraction <span style="color:#f92672">&amp;</span> f) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">Fraction</span>(<span style="color:#66d9ef">this</span><span style="color:#f92672">-&gt;</span>m_numerator <span style="color:#f92672">+</span> f.m_numerator, <span style="color:#66d9ef">this</span><span style="color:#f92672">-&gt;</span>m_denominator <span style="color:#f92672">+</span> f.m_denominator);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> m_numerator;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> m_denominator;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// test_Fraction.cc
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">##include &#34;Fraction.h&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">##include &lt;cassert&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Use (void) to silence unused warnings.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">##define assertm(exp, msg) assert(((void)msg, exp))
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    Fraction f(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">5</span>);
+</span></span><span style="display:flex;"><span>    Fraction d2 <span style="color:#f92672">=</span> f <span style="color:#f92672">+</span> <span style="color:#ae81ff">4</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// assert(d2. == 6.0);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    assert(d2.getDenominator() <span style="color:#f92672">==</span> <span style="color:#ae81ff">6</span>);
+</span></span><span style="display:flex;"><span>    assert(d2.getNumerator() <span style="color:#f92672">==</span> <span style="color:#ae81ff">14</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>上面的案例是将 4 转换为 Fraction 类型（即 int 转为 Fraction）类型</p>
+<p>conversion function and non-explicit-one-argument constructor 同时存在会产生 <code>ambiguous</code>  Error</p>
+<p>explicit-one-argument constructor :  加上 <code>explicit</code> keyword 后是告知编译器禁用 隐式类型转换。</p>
+<h3 id="reference">reference</h3>
+<p>编译器在处理 reference 时实际是将它作为特殊的 pointer, 它具有如下特性：</p>
+<ul>
+<li>引用是被引用对象的一个“别名”</li>
+<li>引用一定要初始化</li>
+<li>object 和其 reference 的内存空间大小相同，地址也相同（假象）
+<ul>
+<li>为了 object 的行为保持一致</li>
+<li>使用 <code>sizeof</code> 和 <code>&amp;p</code>  输出时会显示其所“指向”内容的 object</li>
+</ul>
+</li>
+<li>reference 通常不用于声明变量， 而用于参数类型(parameters type)和返回类型(return type) 的描述</li>
+<li>由于使用<strong>引用方</strong>声明的函数调用方式相同，故不能同时存在两个函数函数签名的区别只在是否传递方式为引用（返回），如若同时出现，编译器会出现 Ambiguity error</li>
+</ul>
+<p>示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">##include &lt;iostream&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> std<span style="color:#f92672">::</span>cout, std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">LED</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> r, g, b;
+</span></span><span style="display:flex;"><span>} LED;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>argv[]) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> x <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> <span style="color:#f92672">*</span>p <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>x;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> <span style="color:#f92672">&amp;</span>r <span style="color:#f92672">=</span> x;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#66d9ef">sizeof</span>(x) <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>    cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#66d9ef">sizeof</span>(p) <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>    cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#66d9ef">sizeof</span>(r) <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    cout <span style="color:#f92672">&lt;&lt;</span> p <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>    cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#f92672">*</span>p <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>    cout <span style="color:#f92672">&lt;&lt;</span> x <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>    cout <span style="color:#f92672">&lt;&lt;</span> r <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>    cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#f92672">&amp;</span>x <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>    cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#f92672">&amp;</span>r <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    LED a1;
+</span></span><span style="display:flex;"><span>    LED <span style="color:#f92672">&amp;</span>r1 <span style="color:#f92672">=</span> a1;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#66d9ef">sizeof</span>(a1) <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>    cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#66d9ef">sizeof</span>(r1) <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>    cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#f92672">&amp;</span>a1 <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>    cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#f92672">&amp;</span>r1 <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="part-3-设计模式">Part 3: 设计模式</h2>
+<h3 id="singleton">Singleton：</h3>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<ul>
+<li>
+<p>将构造函数声明在 private 区域：</p>
+<ul>
+<li>如果使用 <code>class A a;</code> 会报如下错误：
+- <code>The constructor is being delcared as private, so the following line will not compile.</code></li>
+<li>如果使用 <code>class A a(1);</code> 则出现如下错误：
+<ul>
+<li><code>The constructor is being delcared, so the following line will not compile.</code></li>
+</ul>
+</li>
+</ul>
+<p>example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">static</span> A<span style="color:#f92672">&amp;</span> getInstance();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	A (<span style="color:#66d9ef">const</span> A<span style="color:#f92672">&amp;</span> rsh) <span style="color:#f92672">=</span> <span style="color:#66d9ef">delete</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setup</span>() { }
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	A();
+</span></span><span style="display:flex;"><span>	A(<span style="color:#66d9ef">const</span> A<span style="color:#f92672">&amp;</span> rhs);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> A<span style="color:#f92672">&amp;</span> A<span style="color:#f92672">::</span>getInstance() 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">static</span> A a;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> a;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	A<span style="color:#f92672">::</span>getInstance().setup();
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="adapter">Adapter</h3>
+<p>queue 和 deque</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">T</span>, <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Sequence</span> <span style="color:#f92672">=</span> deque<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">queue</span> {
+</span></span><span style="display:flex;"><span>	...
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">protected</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	Sequence c; <span style="color:#75715e">// 底层容器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">bool</span> empty() <span style="color:#66d9ef">const</span> { <span style="color:#66d9ef">return</span> c.empty(); }
+</span></span><span style="display:flex;"><span>	size_type <span style="color:#a6e22e">size</span>() <span style="color:#66d9ef">const</span> { <span style="color:#66d9ef">return</span> c.size(); }
+</span></span><span style="display:flex;"><span>	reference <span style="color:#a6e22e">front</span>() { <span style="color:#66d9ef">return</span> c.front(); }
+</span></span><span style="display:flex;"><span>	reference <span style="color:#a6e22e">back</span>()  { <span style="color:#66d9ef">return</span> c.back(); }
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">push</span>(<span style="color:#66d9ef">const</span> value_type<span style="color:#f92672">&amp;</span> x) { c.push_back(x); }
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">pop</span>() { c.pop_front(); }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="handle--body-or-pointer-to-implementation-pimpl">Handle / Body or Pointer to Implementation (PIMPL)</h3>
+<blockquote>
+<p>Composition by reference</p>
+</blockquote>
+<h3 id="template-method">Template Method</h3>
+<blockquote>
+<p>Inheritance with virtual</p>
+</blockquote>
+<p><img src="https://vgalaxy-blog.oss-cn-nanjing.aliyuncs.com/assets/d3197711cb08462b9459ea1569e9f620.png" alt="d3197711cb08462b9459ea1569e9f620.png"></p>
+<h3 id="observer">Observer</h3>
+<p><img src="https://vgalaxy-blog.oss-cn-nanjing.aliyuncs.com/assets/fe99f1ed866c496a8544d0f39af82392.png" alt="fe99f1ed866c496a8544d0f39af82392.png"></p>
+<h3 id="composite">Composite</h3>
+<p><img src="https://vgalaxy-blog.oss-cn-nanjing.aliyuncs.com/assets/a2af953e4b494751923421517654ab8a.png" alt="a2af953e4b494751923421517654ab8a.png"></p>
+<h3 id="prototype">Prototype</h3>
+<p><img src="https://vgalaxy-blog.oss-cn-nanjing.aliyuncs.com/assets/ae1c0558b048407db65c3db096c3f9eb.png" alt="ae1c0558b048407db65c3db096c3f9eb.png"></p>
+<h3 id="proxy">Proxy</h3>
+<p><img src="https://vgalaxy-blog.oss-cn-nanjing.aliyuncs.com/assets/ba2b04b00a334e6e8c92eb38b5e491a5.png" alt="ba2b04b00a334e6e8c92eb38b5e491a5.png"></p>
+<hr>
+<h2 id="c-20">C++ 2.0</h2>
+<blockquote>
+<p>即 C++11，从这个版本开始，C++ 引入了现代化的机制</p>
+</blockquote>
+<h3 id="variadic-templates">variadic templates</h3>
+<p>数量不定的模版参数</p>
+<p><img src="https://blog-pricture.obs.cn-east-3.myhuaweicloud.com/image/20caa5493f1e4d87a032afea84e0a894.png" alt="20caa5493f1e4d87a032afea84e0a894.png"></p>
+<p>示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">##include &lt;iostream&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">##include &lt;sstream&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Base case
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">print</span>() {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>string rep(<span style="color:#66d9ef">const</span> T <span style="color:#f92672">&amp;</span>t) {
+</span></span><span style="display:flex;"><span>    ostringstream ret;
+</span></span><span style="display:flex;"><span>    ret <span style="color:#f92672">&lt;&lt;</span> t;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> ret.str();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T, <span style="color:#66d9ef">typename</span>... Types<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> print(<span style="color:#66d9ef">const</span> T <span style="color:#f92672">&amp;</span>first, <span style="color:#66d9ef">const</span> Types <span style="color:#f92672">&amp;</span>...args) {
+</span></span><span style="display:flex;"><span>    cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;surplus: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#66d9ef">sizeof</span>...(args) <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>    cout <span style="color:#f92672">&lt;&lt;</span> rep(first) <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>    print(rep(args)...);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;1114413&#34;</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3.0</span>, <span style="color:#e6db74">&#34;hello&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>在标准库中的 tuple 容器的实现也是利用 variadic templates，使用<strong>递归继承</strong>的方式来实现。</p>
+<h3 id="nullptr">nullptr</h3>
+<p><a href="https://cntransgroup.github.io/EffectiveModernCppChinese/3.MovingToModernCpp/item8.html">Item 8:优先考虑nullptr而非0和NULL - Effective Modern C++ (cntransgroup.github.io)</a></p>
+<h3 id="uniform-initialization">uniform initialization</h3>
+<blockquote>
+<p><strong>收缩转换</strong> 是指从一种类型转换为另一种类型，该类型的值域小于原始类型的值域，或完全不相关，执行转换时必须特别注意 (例如，当从转换 Integer 为) 时 String 。
+更多内容查看以下链接：  <a href="https://learn.microsoft.com/zh-cn/dotnet/visual-basic/programming-guide/language-features/data-types/widening-and-narrowing-conversions#narrowing-conversions">扩大转换和收缩转换</a></p>
+</blockquote>
+<ul>
+<li>当变量声明且初始化的过程中 <code>{}</code> 内的值与定义的变量类型不匹配时，不允许类型的收缩转换</li>
+<li>当编译器看到 <code>{t1, t2, ... tn}</code>，便构造一个 <code>initializer_list&lt;T&gt;</code>，其内部引用了 <code>array&lt;T, n&gt;</code> (浅拷贝)</li>
+</ul>
+<p>示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">##include &lt;iostream&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Foo</span> {
+</span></span><span style="display:flex;"><span>    Foo(<span style="color:#66d9ef">int</span> a, <span style="color:#66d9ef">int</span> b) {
+</span></span><span style="display:flex;"><span>        cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Foo::Foo(int, int)&#34;</span> <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Foo(initializer_list<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> list) {
+</span></span><span style="display:flex;"><span>        cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Foo::Foo(initializer_list&lt;int&gt;)&#34;</span> <span style="color:#f92672">&lt;&lt;</span> endl;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    Foo foo(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>    Foo bar{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>};
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><hr>
+<h2 id="part-4-附录">Part 4: 附录</h2>
+<h3 id="视频资料">视频资料</h3>
+<ul>
+<li>侯捷 C++ 面向对象高级编程 上</li>
+<li>侯捷 C++ 面向对象高级编程 下</li>
+<li>侯捷C++11</li>
+</ul>
+<h3 id="文档">文档</h3>
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/453530590">C++ Tuple 异质容器的实现</a></li>
+<li><a href="https://vgalaxy.work/posts/cpp-jjhou/#%E5%85%B3%E4%BA%8E-this">C++ 面向对象高级开发 侯捷 (vgalaxy.work)</a></li>
+</ul>
+
+		</section>
+
+		<div class="post-tags">
+			
+			
+			
+		</div>
+		</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/coldinke" rel="me" title="GitHub"><i data-feather="github"></i></a>
+    <a class="border"></a><a class="soc" href="https://twitter.com/sarvainai" rel="me" title="Twitter"><i data-feather="twitter"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © Vinci |  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+
+
+  
+
+
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

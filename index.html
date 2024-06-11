@@ -6,14 +6,14 @@
 	<meta name="description" content="" />
 	<meta property="og:image" content=""/>
 	<link rel="alternate" type="application/rss+xml" href="https://blog.v1nci.xyz/index.xml" title="Vinci's Blog" />
-	<meta property="og:title" content="Vinci&#39;s Blog" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://blog.v1nci.xyz/" />
+	<meta property="og:url" content="https://blog.v1nci.xyz/">
+  <meta property="og:site_name" content="Vinci&#39;s Blog">
+  <meta property="og:title" content="Vinci&#39;s Blog">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="website">
 
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Vinci&#39;s Blog"/>
-<meta name="twitter:description" content=""/>
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Vinci&#39;s Blog">
 <script src="https://blog.v1nci.xyz/js/feather.min.js"></script>
 	
 	
@@ -91,9 +91,25 @@
 
 			
 			<main class="list">
-				<div class="site-description"><p>Hacking for Fun : )</p></div>
+				<div class="site-description"><p>Enjoy your life, it&rsquo;s just getting started. :)</p></div>
 				
 				
+				
+				<section class="list-item">
+					<h1 class="title"><a href="/posts/cppnotes/">C&#43;&#43; 面向对象程序设计</a></h1>
+					<time>Jun 11, 2024</time>
+					<br><div class="description">
+	
+	C++ 面向对象程序设计 本文是笔者学习 C++ 时的笔记，可能存在错误，如若发现，欢迎和笔者交流。
+Part 1: 语法基础 Object model 关于 vptr 和 vtbl vptr: virtual pointer vtbl: virtual table 前置知识：
+当子类继承父类时，除了继承了父类定义的数据和函数（包括虚函数） 继承父类的函数，实际的含义是拥有调用父类函数的调用权 下图说明了 vptr 和 vtbl 在内存中的结构：
+使用动态绑定的方式来实现多态时的前置条件：
+当前类型必须继承了一个共同的父类 （up-cast） 必须通过指针来调用 调用的函数必须是虚函数 类的设计 示例：
+class complex() { public: // Constructor ... // Member functions ... // Operator overloading ... // Destructor // Friend functions private: int re, im; } class with pointer members 必须有 copy constructor(拷贝构造函数) 和 copy op=（拷贝赋值运算符重载）&hellip;
+	
+</div>
+					<a class="readmore" href="/posts/cppnotes/">Read more ⟶</a>
+				</section>
 				
 				<section class="list-item">
 					<h1 class="title"><a href="/posts/cppoop/">C&#43;&#43; 面向对象编程简述</a></h1>
@@ -126,10 +142,13 @@
     <a class="border"></a><a class="soc" href="https://twitter.com/sarvainai" rel="me" title="Twitter"><i data-feather="twitter"></i></a>
     <a class="border"></a></div>
   <div class="footer-info">
-    2023  © Vinci |  <a
+    2024  © Vinci |  <a
       href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
   </div>
 </footer>
+
+
+  
 
 
 <script>

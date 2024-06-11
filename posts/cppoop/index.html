@@ -15,38 +15,32 @@ View C&#43;&#43; as a federation of languages
 可能你的答案于 PPT 一样，也可能你会有其他的想法，其实没有所谓的标准答案。这不是考试 :(
 下面我们进入 C&#43;&#43; 的世界，看看它提供了什么样的机制来帮助我们写出“好”的面向对象风格的代码 :)" />
 	<meta property="og:image" content=""/>
-	<meta property="og:title" content="C&#43;&#43; 面向对象编程简述" />
-<meta property="og:description" content="C&#43;&#43; 面向对象编程
-简述面向对象编程
-面向对象编程这种范式是以**对象(Object)**为核心概念的一种编程范式，它以符合人类的思维方式和适合开发维护大型、复杂的程序而流行。许多语言最开始也基于这一编程范式而设计的，如 C&#43;&#43;, Java, Python 等。
+	<meta property="og:url" content="https://blog.v1nci.xyz/posts/cppoop/">
+  <meta property="og:site_name" content="Vinci&#39;s Blog">
+  <meta property="og:title" content="C&#43;&#43; 面向对象编程简述">
+  <meta property="og:description" content="C&#43;&#43; 面向对象编程 简述面向对象编程 面向对象编程这种范式是以**对象(Object)**为核心概念的一种编程范式，它以符合人类的思维方式和适合开发维护大型、复杂的程序而流行。许多语言最开始也基于这一编程范式而设计的，如 C&#43;&#43;, Java, Python 等。
 但 C&#43;&#43; 不单单只支持面向对象这一种编程范式，你可以用它编写出命令式、函数式等多种风格的代码。如果你阅读过 Scott Meyers 的 《Effective C&#43;&#43;》 你应该知道下面这条建议：
-
 View C&#43;&#43; as a federation of languages
-
 在长久的发展中，C&#43;&#43; 没有了最初的那份纯粹，它多了许多复杂而有趣的特性，如funcaional, template 等。我想这或许是网上流传 C&#43;&#43; 学习曲线极高的缘由。说远了，我们说会本篇的主题 - 面向对象编程
 正如前文所说面向对象的核心在对象，它由两部分组成一是属性(data)用于描述对象具备的特征（质）；二是方法(code)用于描述对象的行为。在此基础上出现了封装、类、继承、多态等概念。下面我们来思考个问题如何使用面向对象的思想来描述一个学生？
-
 可能你的答案于 PPT 一样，也可能你会有其他的想法，其实没有所谓的标准答案。这不是考试 :(
-下面我们进入 C&#43;&#43; 的世界，看看它提供了什么样的机制来帮助我们写出“好”的面向对象风格的代码 :)" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://blog.v1nci.xyz/posts/cppoop/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2023-11-24T17:25:13+08:00" />
-<meta property="article:modified_time" content="2023-11-24T17:25:13+08:00" />
+下面我们进入 C&#43;&#43; 的世界，看看它提供了什么样的机制来帮助我们写出“好”的面向对象风格的代码 :)">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-11-24T17:25:13+08:00">
+    <meta property="article:modified_time" content="2023-11-24T17:25:13+08:00">
+    <meta property="article:tag" content="C&#43;&#43;">
 
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="C&#43;&#43; 面向对象编程简述"/>
-<meta name="twitter:description" content="C&#43;&#43; 面向对象编程
-简述面向对象编程
-面向对象编程这种范式是以**对象(Object)**为核心概念的一种编程范式，它以符合人类的思维方式和适合开发维护大型、复杂的程序而流行。许多语言最开始也基于这一编程范式而设计的，如 C&#43;&#43;, Java, Python 等。
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="C&#43;&#43; 面向对象编程简述">
+  <meta name="twitter:description" content="C&#43;&#43; 面向对象编程 简述面向对象编程 面向对象编程这种范式是以**对象(Object)**为核心概念的一种编程范式，它以符合人类的思维方式和适合开发维护大型、复杂的程序而流行。许多语言最开始也基于这一编程范式而设计的，如 C&#43;&#43;, Java, Python 等。
 但 C&#43;&#43; 不单单只支持面向对象这一种编程范式，你可以用它编写出命令式、函数式等多种风格的代码。如果你阅读过 Scott Meyers 的 《Effective C&#43;&#43;》 你应该知道下面这条建议：
-
 View C&#43;&#43; as a federation of languages
-
 在长久的发展中，C&#43;&#43; 没有了最初的那份纯粹，它多了许多复杂而有趣的特性，如funcaional, template 等。我想这或许是网上流传 C&#43;&#43; 学习曲线极高的缘由。说远了，我们说会本篇的主题 - 面向对象编程
 正如前文所说面向对象的核心在对象，它由两部分组成一是属性(data)用于描述对象具备的特征（质）；二是方法(code)用于描述对象的行为。在此基础上出现了封装、类、继承、多态等概念。下面我们来思考个问题如何使用面向对象的思想来描述一个学生？
-
 可能你的答案于 PPT 一样，也可能你会有其他的想法，其实没有所谓的标准答案。这不是考试 :(
-下面我们进入 C&#43;&#43; 的世界，看看它提供了什么样的机制来帮助我们写出“好”的面向对象风格的代码 :)"/>
+下面我们进入 C&#43;&#43; 的世界，看看它提供了什么样的机制来帮助我们写出“好”的面向对象风格的代码 :)">
 <script src="https://blog.v1nci.xyz/js/feather.min.js"></script>
 	
 	
@@ -227,10 +221,13 @@ View C&#43;&#43; as a federation of languages
     <a class="border"></a><a class="soc" href="https://twitter.com/sarvainai" rel="me" title="Twitter"><i data-feather="twitter"></i></a>
     <a class="border"></a></div>
   <div class="footer-info">
-    2023  © Vinci |  <a
+    2024  © Vinci |  <a
       href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
   </div>
 </footer>
+
+
+  
 
 
 <script>
