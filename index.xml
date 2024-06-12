@@ -14,14 +14,14 @@
       <link>https://blog.v1nci.xyz/posts/cppnotes/</link>
       <pubDate>Tue, 11 Jun 2024 22:17:14 +0800</pubDate>
       <guid>https://blog.v1nci.xyz/posts/cppnotes/</guid>
-      <description>&lt;h1 id=&#34;c-面向对象程序设计&#34;&gt;C++ 面向对象程序设计&lt;/h1&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;本文是笔者学习 C++ 时的笔记，可能存在错误，如若发现，欢迎和笔者交流。&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;本文是笔者学习 C++ 时的笔记，可能存在错误，如若发现，欢迎和笔者交流。&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
     </item>
     <item>
       <title>C&#43;&#43; 面向对象编程简述</title>
       <link>https://blog.v1nci.xyz/posts/cppoop/</link>
       <pubDate>Fri, 24 Nov 2023 17:25:13 +0800</pubDate>
       <guid>https://blog.v1nci.xyz/posts/cppoop/</guid>
-      <description>&lt;h1 id=&#34;c-面向对象编程&#34;&gt;C++ 面向对象编程&lt;/h1&gt;&#xA;&lt;h2 id=&#34;简述面向对象编程&#34;&gt;简述面向对象编程&lt;/h2&gt;&#xA;&lt;p&gt;面向对象编程这种范式是以**对象(Object)**为核心概念的一种编程范式，它以符合人类的思维方式和适合开发维护大型、复杂的程序而流行。许多语言最开始也基于这一编程范式而设计的，如 C++, Java, Python 等。&lt;/p&gt;&#xA;&lt;p&gt;但 C++ 不单单只支持面向对象这一种编程范式，你可以用它编写出命令式、函数式等多种风格的代码。如果你阅读过 Scott Meyers 的 《Effective C++》 你应该知道下面这条建议：&lt;/p&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;View C++ as a federation of languages&lt;/p&gt;&#xA;&lt;/blockquote&gt;&#xA;&lt;p&gt;在长久的发展中，C++ 没有了最初的那份纯粹，它多了许多复杂而有趣的特性，如funcaional, template 等。我想这或许是网上流传 C++ 学习曲线极高的缘由。说远了，我们说会本篇的主题 - 面向对象编程&lt;/p&gt;&#xA;&lt;p&gt;正如前文所说面向对象的核心在对象，它由两部分组成一是属性(data)用于描述对象具备的特征（质）；二是方法(code)用于描述对象的行为。在此基础上出现了封装、类、继承、多态等概念。下面我们来思考个问题如何使用面向对象的思想来描述一个学生？&lt;/p&gt;&#xA;&lt;p&gt;&lt;img src=&#34;https://blog-pricture.obs.cn-east-3.myhuaweicloud.com/image/example_oop.png&#34; alt=&#34;example_oop1&#34;&gt;&lt;/p&gt;&#xA;&lt;p&gt;可能你的答案于 PPT 一样，也可能你会有其他的想法，其实没有所谓的标准答案。这不是考试 :(&lt;/p&gt;&#xA;&lt;p&gt;下面我们进入 C++ 的世界，看看它提供了什么样的机制来帮助我们写出“好”的面向对象风格的代码 :)&lt;/p&gt;</description>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;本文记录了笔者眼中的面向对象程序设计的看法，可能存在错误，欢迎与笔者交流。&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
     </item>
     <item>
       <title>About</title>

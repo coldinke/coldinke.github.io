@@ -2,29 +2,14 @@
 <html><head lang="en">
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>C&#43;&#43; 面向对象编程简述 - Vinci&#39;s Blog</title><link rel="icon" type="image/png" href=https://blog-pricture.obs.cn-east-3.myhuaweicloud.com/image/Ih.jpg /><meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="C&#43;&#43; 面向对象编程
-简述面向对象编程
-面向对象编程这种范式是以**对象(Object)**为核心概念的一种编程范式，它以符合人类的思维方式和适合开发维护大型、复杂的程序而流行。许多语言最开始也基于这一编程范式而设计的，如 C&#43;&#43;, Java, Python 等。
-但 C&#43;&#43; 不单单只支持面向对象这一种编程范式，你可以用它编写出命令式、函数式等多种风格的代码。如果你阅读过 Scott Meyers 的 《Effective C&#43;&#43;》 你应该知道下面这条建议：
-
-View C&#43;&#43; as a federation of languages
-
-在长久的发展中，C&#43;&#43; 没有了最初的那份纯粹，它多了许多复杂而有趣的特性，如funcaional, template 等。我想这或许是网上流传 C&#43;&#43; 学习曲线极高的缘由。说远了，我们说会本篇的主题 - 面向对象编程
-正如前文所说面向对象的核心在对象，它由两部分组成一是属性(data)用于描述对象具备的特征（质）；二是方法(code)用于描述对象的行为。在此基础上出现了封装、类、继承、多态等概念。下面我们来思考个问题如何使用面向对象的思想来描述一个学生？
-
-可能你的答案于 PPT 一样，也可能你会有其他的想法，其实没有所谓的标准答案。这不是考试 :(
-下面我们进入 C&#43;&#43; 的世界，看看它提供了什么样的机制来帮助我们写出“好”的面向对象风格的代码 :)" />
+	<meta name="description" content="
+本文记录了笔者眼中的面向对象程序设计的看法，可能存在错误，欢迎与笔者交流。
+" />
 	<meta property="og:image" content=""/>
 	<meta property="og:url" content="https://blog.v1nci.xyz/posts/cppoop/">
   <meta property="og:site_name" content="Vinci&#39;s Blog">
   <meta property="og:title" content="C&#43;&#43; 面向对象编程简述">
-  <meta property="og:description" content="C&#43;&#43; 面向对象编程 简述面向对象编程 面向对象编程这种范式是以**对象(Object)**为核心概念的一种编程范式，它以符合人类的思维方式和适合开发维护大型、复杂的程序而流行。许多语言最开始也基于这一编程范式而设计的，如 C&#43;&#43;, Java, Python 等。
-但 C&#43;&#43; 不单单只支持面向对象这一种编程范式，你可以用它编写出命令式、函数式等多种风格的代码。如果你阅读过 Scott Meyers 的 《Effective C&#43;&#43;》 你应该知道下面这条建议：
-View C&#43;&#43; as a federation of languages
-在长久的发展中，C&#43;&#43; 没有了最初的那份纯粹，它多了许多复杂而有趣的特性，如funcaional, template 等。我想这或许是网上流传 C&#43;&#43; 学习曲线极高的缘由。说远了，我们说会本篇的主题 - 面向对象编程
-正如前文所说面向对象的核心在对象，它由两部分组成一是属性(data)用于描述对象具备的特征（质）；二是方法(code)用于描述对象的行为。在此基础上出现了封装、类、继承、多态等概念。下面我们来思考个问题如何使用面向对象的思想来描述一个学生？
-可能你的答案于 PPT 一样，也可能你会有其他的想法，其实没有所谓的标准答案。这不是考试 :(
-下面我们进入 C&#43;&#43; 的世界，看看它提供了什么样的机制来帮助我们写出“好”的面向对象风格的代码 :)">
+  <meta property="og:description" content=" 本文记录了笔者眼中的面向对象程序设计的看法，可能存在错误，欢迎与笔者交流。">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
@@ -34,13 +19,7 @@ View C&#43;&#43; as a federation of languages
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="C&#43;&#43; 面向对象编程简述">
-  <meta name="twitter:description" content="C&#43;&#43; 面向对象编程 简述面向对象编程 面向对象编程这种范式是以**对象(Object)**为核心概念的一种编程范式，它以符合人类的思维方式和适合开发维护大型、复杂的程序而流行。许多语言最开始也基于这一编程范式而设计的，如 C&#43;&#43;, Java, Python 等。
-但 C&#43;&#43; 不单单只支持面向对象这一种编程范式，你可以用它编写出命令式、函数式等多种风格的代码。如果你阅读过 Scott Meyers 的 《Effective C&#43;&#43;》 你应该知道下面这条建议：
-View C&#43;&#43; as a federation of languages
-在长久的发展中，C&#43;&#43; 没有了最初的那份纯粹，它多了许多复杂而有趣的特性，如funcaional, template 等。我想这或许是网上流传 C&#43;&#43; 学习曲线极高的缘由。说远了，我们说会本篇的主题 - 面向对象编程
-正如前文所说面向对象的核心在对象，它由两部分组成一是属性(data)用于描述对象具备的特征（质）；二是方法(code)用于描述对象的行为。在此基础上出现了封装、类、继承、多态等概念。下面我们来思考个问题如何使用面向对象的思想来描述一个学生？
-可能你的答案于 PPT 一样，也可能你会有其他的想法，其实没有所谓的标准答案。这不是考试 :(
-下面我们进入 C&#43;&#43; 的世界，看看它提供了什么样的机制来帮助我们写出“好”的面向对象风格的代码 :)">
+  <meta name="twitter:description" content=" 本文记录了笔者眼中的面向对象程序设计的看法，可能存在错误，欢迎与笔者交流。">
 <script src="https://blog.v1nci.xyz/js/feather.min.js"></script>
 	
 	
@@ -123,7 +102,9 @@ View C&#43;&#43; as a federation of languages
 		
 
 		<section class="body">
-			<h1 id="c-面向对象编程">C++ 面向对象编程</h1>
+			<blockquote>
+<p>本文记录了笔者眼中的面向对象程序设计的看法，可能存在错误，欢迎与笔者交流。</p>
+</blockquote>
 <h2 id="简述面向对象编程">简述面向对象编程</h2>
 <p>面向对象编程这种范式是以**对象(Object)**为核心概念的一种编程范式，它以符合人类的思维方式和适合开发维护大型、复杂的程序而流行。许多语言最开始也基于这一编程范式而设计的，如 C++, Java, Python 等。</p>
 <p>但 C++ 不单单只支持面向对象这一种编程范式，你可以用它编写出命令式、函数式等多种风格的代码。如果你阅读过 Scott Meyers 的 《Effective C++》 你应该知道下面这条建议：</p>
@@ -133,7 +114,7 @@ View C&#43;&#43; as a federation of languages
 <p>在长久的发展中，C++ 没有了最初的那份纯粹，它多了许多复杂而有趣的特性，如funcaional, template 等。我想这或许是网上流传 C++ 学习曲线极高的缘由。说远了，我们说会本篇的主题 - 面向对象编程</p>
 <p>正如前文所说面向对象的核心在对象，它由两部分组成一是属性(data)用于描述对象具备的特征（质）；二是方法(code)用于描述对象的行为。在此基础上出现了封装、类、继承、多态等概念。下面我们来思考个问题如何使用面向对象的思想来描述一个学生？</p>
 <p><img src="https://blog-pricture.obs.cn-east-3.myhuaweicloud.com/image/example_oop.png" alt="example_oop1"></p>
-<p>可能你的答案于 PPT 一样，也可能你会有其他的想法，其实没有所谓的标准答案。这不是考试 :(</p>
+<p>可能你的答案与 PPT 一样，也可能你会有其他的想法，其实没有所谓的标准答案。这不是考试 :(</p>
 <p>下面我们进入 C++ 的世界，看看它提供了什么样的机制来帮助我们写出“好”的面向对象风格的代码 :)</p>
 <h2 id="使用-c-写面向对象风格的代码">使用 C++ 写面向对象风格的代码</h2>
 <h3 id="c-提供的机制支持">C++ 提供的机制/支持</h3>
@@ -147,7 +128,8 @@ View C&#43;&#43; as a federation of languages
 </li>
 </ul>
 <blockquote>
-<p>乍一看单独划分出 <code>constructor</code> 和 <code>destructor</code> 是无意义的，但实际上不然在一个存在继承和其他关系的 <code>class</code> 中其初始和销毁也不是一件简单的事情。</p>
+<p>乍一看，将 <code>constructor</code> 和 <code>destructor</code> 单独划分似乎没有意义，但事实并非如此一个存在继承和其他关系的 <code>class</code> 中，初始化和销毁是复杂的事情。
+这里还涉及到资源的申请和释放。但本文不做详细描述。</p>
 </blockquote>
 <ul>
 <li>继承
@@ -184,6 +166,7 @@ View C&#43;&#43; as a federation of languages
 </span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Member functions
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	...
 </span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Operator overloading
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 重载符号使其符合类的行为。例如，重载加号以实现复数加法，与数学中定义一致。
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	...
 </span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Destructor
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// Friend functions
@@ -192,13 +175,125 @@ View C&#43;&#43; as a federation of languages
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	...
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h3 id="如何才能写出一个可阅读的鲁棒性佳的面向风格的代码">如何才能写出一个可阅读的、鲁棒性佳的面向风格的代码？</h3>
+<p>这里，我将问题转述给了现在火热的大模型 ChatGpt 和 Claude，看看他们的回答。</p>
+<h3 id="chatgpt">ChatGpt</h3>
+<p>以下是我根据 ChatGPT 的回答整理的内容：</p>
+<ul>
+<li>命名规范
+<ul>
+<li>统一的命名风格和有意义的变量名和函数名</li>
+</ul>
+</li>
+<li>注释
+<ul>
+<li>为类、函数和复杂逻辑添加注释</li>
+<li>保持注释的简洁</li>
+</ul>
+</li>
+<li>类的设计
+<ul>
+<li>根据面向对象的要求将数据和功能做好封装</li>
+<li>避免过度使用全局变量</li>
+<li>合适的 Constructor 和 Destructor</li>
+</ul>
+</li>
+<li>异常处理
+<ul>
+<li>使用异常处理机制尽可能早的捕获错误，避免错误的处理链过长</li>
+<li>提供有意义的错误信息</li>
+</ul>
+</li>
+<li>模块化</li>
+</ul>
+<p>以上是在没有复杂的继承关系和组合关系时，当出现复杂的继承关系和组合关系时，需要遵循以下设计原则。</p>
+<p>设计原则:</p>
+<ul>
+<li>SRP: 每个类应该只有一个职责，即只负责一件事</li>
+<li>OCP: 软件实体应该是可扩展的，但不可修改的</li>
+<li>LSP: 子类对象必须能够替换父类对象而不影响程序的正确性</li>
+<li>ISP: 使用多个专门的接口，而不是一个通用的接口</li>
+<li>DIP: 高层模块不应该依赖于底层模块，二者都应该依赖于抽象</li>
+</ul>
+<p>设计模式：</p>
+<ul>
+<li>组合优于继承: 优先使用组合而不是继承来复用代码</li>
+<li>策略模式: 定义一系列算法，并使它们之间可以互换</li>
+<li>装饰模式: 动态地将责任附加到对象上</li>
+</ul>
+<p>代码示例查看 <a href="https://github.com/coldinke/exercises/tree/main/Cpp/OOP">link</a></p>
+<h3 id="claude">Claude</h3>
+<p>以下是我根据 ChatGPT 的回答整理的内容：</p>
+<ul>
+<li>良好的代码结构和组织
+<ul>
+<li>将代码按照职责进行合理分类，每个类只负责单一的功能</li>
+<li>将相关的数据和操作封装在同一个类中</li>
+<li>合理使用命名空间来避免命名冲突</li>
+</ul>
+</li>
+<li>编写简单、一致的接口
+<ul>
+<li>公共接口应该精简、一致且符合常规命名约定</li>
+</ul>
+</li>
+<li>有意义的命名
+<ul>
+<li>使用有意义的命名来表达类、函数、变量的作用，提高代码的可读性</li>
+</ul>
+</li>
+<li>正常使用注释
+<ul>
+<li>适当添加注释增加可读性</li>
+</ul>
+</li>
+<li>合理使用 RAII （资源获取即初始化）
+<ul>
+<li>使用 RAII 机制来自动化资源的获取和释放</li>
+</ul>
+</li>
+<li>错误处理
+<ul>
+<li>正确地捕获和处理各种可能的异常情况，防止程序出现为 UB</li>
+</ul>
+</li>
+<li>单元测试
+<ul>
+<li>编写单元测试不仅可以验证代码的正确性，还能保证后续修改不会引入新的错误</li>
+</ul>
+</li>
+</ul>
+<p>以上是在没有复杂的继承关系和组合关系时，当出现复杂的继承关系和组合关系时，需要遵循以下设计原则。</p>
+<ul>
+<li>接口继承比实现继承更安全
+<ul>
+<li>接口继承通过纯虚函数定义接口，子类只需要实现所需方法。这种方式松耦合，允许在不修改基类的情况下扩展，并实现多重继承</li>
+</ul>
+</li>
+<li>合理使用组合关系
+<ul>
+<li>组合在运行时动态组装对象，获得更大的灵活性</li>
+</ul>
+</li>
+<li>避免继承体系过于复杂
+<ul>
+<li>过于复杂的继承体系会导致代码难以理解和维护，可以通过组合或委托实现代码重用</li>
+</ul>
+</li>
+<li>使用虚继承避免菱形继承问题
+<ul>
+<li>在菱形继承中，两个子类从同一个基类派生，如果不使用虚继承会导致重复数据</li>
+</ul>
+</li>
+<li>使用非继承关系实现代码重用
+<ul>
+<li>可以使用策略模式、工厂模式或其他设计模型来实现代码重用</li>
+</ul>
+</li>
+</ul>
+<p>Cluade 没有像 ChatGPT 一样提供大段可运行的代码。</p>
 <blockquote>
-<p>当下的我不具备回答这个问题的能力理由如下：
-一是我面向对象风格的代码接触的少；
-二是我并没有实际工业界的工作经验，所以我判断目前的我不具备回答这个问题的能力。
-故用程序员的方式留下个记号，以后来回答吧 :(</p>
+<p>以上内容需要读者根据经验来辩证的对待，并没有标准答案。</p>
 </blockquote>
-<p>TODO</p>
 <h2 id="总结">总结</h2>
 <p>本文简单描述了 C++ 对面向对象这一范式提供了什么样的机制，但限于笔者水平并没有写出规划中最具“价值”的部分。此外，还有些许遗憾并没有对工程实践中常见到的设计模式进行描述。</p>
 <p>本篇用于记录笔者在看完侯捷老师的 C++ 面向对象高级编程后对面向对象的理解，如文章内容有误，欢迎联系我 :)</p>
@@ -207,6 +302,11 @@ View C&#43;&#43; as a federation of languages
 <p><a href="https://www.techtarget.com/searchapparchitecture/definition/object-oriented-programming-OOP#:~:text=Object%2Doriented%20programming%20(OOP)%20is%20a%20computer%20programming%20model,has%20unique%20attributes%20and%20behavior.">object-oriented programming(OOP)</a></p>
 <p><a href="https://en.wikipedia.org/wiki/Object-oriented_programming">Object-oriented programming - wikipedia</a></p>
 <p><a href="https://en.wikipedia.org/wiki/C%2B%2B">C++ - wikipedia</a></p>
+<p>大模型：</p>
+<ul>
+<li>ChatGPT</li>
+<li>Cluade</li>
+</ul>
 		</section>
 
 		<div class="post-tags">
