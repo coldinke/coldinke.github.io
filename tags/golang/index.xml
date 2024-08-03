@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Golang on V1nci&#39;s Blog</title>
+    <link>http://localhost:1313/tags/golang/</link>
+    <description>Recent content in Golang on V1nci&#39;s Blog</description>
+    <generator>Hugo</generator>
+    <language>zh-cn</language>
+    <copyright>2024 © V1nci</copyright>
+    <lastBuildDate>Wed, 06 Dec 2023 14:51:09 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Golang 之旅：起初</title>
+      <link>http://localhost:1313/posts/golang_01/</link>
+      <pubDate>Wed, 06 Dec 2023 14:51:09 +0800</pubDate>
+      <guid>http://localhost:1313/posts/golang_01/</guid>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;本文不涉及 Golang 在实际工程项目中的应用如微服务、Kubernetes 等，仅用于记录笔者对 Golang 的思考或转述&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+    </item>
+  </channel>
+</rss>

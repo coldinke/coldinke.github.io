@@ -1,27 +1,20 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on Vinci&#39;s Blog</title>
+    <title>Posts on V1nci 的博客</title>
     <link>https://blog.v1nci.xyz/posts/</link>
-    <description>Recent content in Posts on Vinci&#39;s Blog</description>
+    <description>Recent content in Posts on V1nci 的博客</description>
     <generator>Hugo</generator>
-    <language>zh-CN</language>
-    <copyright>© Vinci</copyright>
-    <lastBuildDate>Tue, 11 Jun 2024 22:17:14 +0800</lastBuildDate>
+    <language>zh-cn</language>
+    <copyright>2024 © V1nci</copyright>
+    <lastBuildDate>Sat, 03 Aug 2024 12:36:32 +0800</lastBuildDate>
     <atom:link href="https://blog.v1nci.xyz/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>C&#43;&#43; 面向对象程序设计</title>
-      <link>https://blog.v1nci.xyz/posts/cppnotes/</link>
-      <pubDate>Tue, 11 Jun 2024 22:17:14 +0800</pubDate>
-      <guid>https://blog.v1nci.xyz/posts/cppnotes/</guid>
-      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;本文是笔者学习 C++ 时的笔记，可能存在错误，如若发现，欢迎和笔者交流。&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
-    </item>
-    <item>
-      <title>C&#43;&#43; 面向对象编程简述</title>
-      <link>https://blog.v1nci.xyz/posts/cppoop/</link>
-      <pubDate>Fri, 24 Nov 2023 17:25:13 +0800</pubDate>
-      <guid>https://blog.v1nci.xyz/posts/cppoop/</guid>
-      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;本文记录了笔者眼中的面向对象程序设计的看法，可能存在错误，欢迎与笔者交流。&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+      <title>Docker 学习系列（一）： Hello Docker!</title>
+      <link>https://blog.v1nci.xyz/posts/docker_note_1/</link>
+      <pubDate>Sat, 03 Aug 2024 12:36:32 +0800</pubDate>
+      <guid>https://blog.v1nci.xyz/posts/docker_note_1/</guid>
+      <description>Docker 基础介绍及常用命令 简介 Docker 使用 Go 语言开发，基于内核的 cgroup, namespace 以及 OverlayFS 类的 UnionFS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。&#xA;基本概念： 镜像 （Image） 其中官方文档的描述如下：&#xA;The are two important principles of images:&#xA;Images are immutable. Once an image is created, it can&amp;rsquo;t be modified. You can only make new image or add changes on top of it. Container images are composed of layers. Each layer represented a set of file system changes that add, remove or modify files.</description>
     </item>
   </channel>
 </rss>

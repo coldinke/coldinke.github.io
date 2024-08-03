@@ -1,0 +1,415 @@
+<!doctype html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html
+  class="not-ready lg:text-base"
+  style="--bg: #fff"
+  lang="zh-cn"
+>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no"
+  />
+
+  
+  <title>Docker 学习系列（一）： Hello Docker! - V1nci 的博客</title>
+
+  
+  <meta name="theme-color" />
+
+  
+  
+  
+  
+  <meta name="description" content="Docker 基础介绍及常用命令 简介 Docker 使用 Go 语言开发，基于内核的 cgroup, namespace 以及 OverlayFS 类的 UnionFS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。
+基本概念： 镜像 （Image） 其中官方文档的描述如下：
+The are two important principles of images:
+Images are immutable. Once an image is created, it can&rsquo;t be modified. You can only make new image or add changes on top of it. Container images are composed of layers. Each layer represented a set of file system changes that add, remove or modify files." />
+  <meta name="author" content="V1nci" />
+  
+
+  
+  
+  
+  
+  
+  
+  <link rel="preload stylesheet" as="style" href="https://blog.v1nci.xyz/main.min.css" />
+
+  
+  
+  
+  
+  
+  <link rel="preload" as="image" href="https://blog.v1nci.xyz/theme.png" />
+
+  
+  
+  
+  
+  <link rel="preload" as="image" href="https://blog-pricture.obs.cn-east-3.myhuaweicloud.com/image/Ih.jpg" />
+  
+  
+
+  
+  
+  <link rel="preload" as="image" href="https://blog.v1nci.xyz/twitter.svg" />
+  
+  <link rel="preload" as="image" href="https://blog.v1nci.xyz/github.svg" />
+  
+  
+
+  
+  
+  <script
+    defer
+    src="https://blog.v1nci.xyz/highlight.min.js"
+    onload="hljs.initHighlightingOnLoad();"
+  ></script>
+  
+
+  
+  
+  
+
+  
+  <link rel="icon" href="https://blog.v1nci.xyz/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://blog.v1nci.xyz/apple-touch-icon.png" />
+
+  
+  <meta name="generator" content="Hugo 0.128.2">
+
+  
+  
+  
+  
+  
+
+
+  
+  
+  <meta itemprop="name" content="Docker 学习系列（一）： Hello Docker!">
+  <meta itemprop="description" content="Docker 基础介绍及常用命令 简介 Docker 使用 Go 语言开发，基于内核的 cgroup, namespace 以及 OverlayFS 类的 UnionFS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。
+基本概念： 镜像 （Image） 其中官方文档的描述如下：
+The are two important principles of images:
+Images are immutable. Once an image is created, it can’t be modified. You can only make new image or add changes on top of it. Container images are composed of layers. Each layer represented a set of file system changes that add, remove or modify files.">
+  <meta itemprop="datePublished" content="2024-08-03T12:36:32+08:00">
+  <meta itemprop="dateModified" content="2024-08-03T12:36:32+08:00">
+  <meta itemprop="wordCount" content="251">
+  <meta itemprop="keywords" content="Docker">
+  
+  <meta property="og:url" content="https://blog.v1nci.xyz/posts/docker_note_1/">
+  <meta property="og:site_name" content="V1nci 的博客">
+  <meta property="og:title" content="Docker 学习系列（一）： Hello Docker!">
+  <meta property="og:description" content="Docker 基础介绍及常用命令 简介 Docker 使用 Go 语言开发，基于内核的 cgroup, namespace 以及 OverlayFS 类的 UnionFS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。
+基本概念： 镜像 （Image） 其中官方文档的描述如下：
+The are two important principles of images:
+Images are immutable. Once an image is created, it can’t be modified. You can only make new image or add changes on top of it. Container images are composed of layers. Each layer represented a set of file system changes that add, remove or modify files.">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-08-03T12:36:32+08:00">
+    <meta property="article:modified_time" content="2024-08-03T12:36:32+08:00">
+    <meta property="article:tag" content="Docker">
+
+  
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Docker 学习系列（一）： Hello Docker!">
+  <meta name="twitter:description" content="Docker 基础介绍及常用命令 简介 Docker 使用 Go 语言开发，基于内核的 cgroup, namespace 以及 OverlayFS 类的 UnionFS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。
+基本概念： 镜像 （Image） 其中官方文档的描述如下：
+The are two important principles of images:
+Images are immutable. Once an image is created, it can’t be modified. You can only make new image or add changes on top of it. Container images are composed of layers. Each layer represented a set of file system changes that add, remove or modify files.">
+
+  
+  
+  
+  <link rel="canonical" href="https://blog.v1nci.xyz/posts/docker_note_1/" />
+  
+  
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header class="mx-auto flex h-[4.5rem] max-w-3xl px-8 lg:justify-center">
+  <div class="relative z-50 mr-auto flex items-center">
+    <a
+      class="-translate-x-[1px] -translate-y-[1px] text-2xl font-semibold"
+      href="https://blog.v1nci.xyz/"
+      >V1nci 的博客</a
+    >
+    <div
+      class="btn-dark text-[0] ml-4 h-6 w-6 shrink-0 cursor-pointer [background:url(./theme.png)_left_center/_auto_theme('spacing.6')_no-repeat] [transition:_background-position_0.4s_steps(5)] dark:[background-position:right]"
+      role="button"
+      aria-label="Dark"
+    ></div>
+  </div>
+
+  <div
+    class="btn-menu relative z-50 -mr-8 flex h-[4.5rem] w-[5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+    role="button"
+    aria-label="Menu"
+  ></div>
+
+  
+
+  <script>
+    
+    const htmlClass = document.documentElement.classList;
+    setTimeout(() => {
+      htmlClass.remove('not-ready');
+    }, 10);
+
+    
+    const btnMenu = document.querySelector('.btn-menu');
+    btnMenu.addEventListener('click', () => {
+      htmlClass.toggle('open');
+    });
+
+    
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    const lightBg = '#fff'.replace(/"/g, '');
+    const setDark = (isDark) => {
+      metaTheme.setAttribute('content', isDark ? '#000' : lightBg);
+      htmlClass[isDark ? 'add' : 'remove']('dark');
+      localStorage.setItem('dark', isDark);
+    };
+
+    
+    const darkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    if (htmlClass.contains('dark')) {
+      setDark(true);
+    } else {
+      const darkVal = localStorage.getItem('dark');
+      setDark(darkVal ? darkVal === 'true' : darkScheme.matches);
+    }
+
+    
+    darkScheme.addEventListener('change', (event) => {
+      setDark(event.matches);
+    });
+
+    
+    const btnDark = document.querySelector('.btn-dark');
+    btnDark.addEventListener('click', () => {
+      setDark(localStorage.getItem('dark') !== 'true');
+    });
+  </script>
+
+  <div
+    class="nav-wrapper fixed inset-x-0 top-full z-40 flex h-full select-none flex-col justify-center pb-16 duration-200 dark:bg-black lg:static lg:h-auto lg:flex-row lg:!bg-transparent lg:pb-0 lg:transition-none"
+  >
+    
+    
+    <nav class="lg:ml-12 lg:flex lg:flex-row lg:items-center lg:space-x-6">
+      
+      <a
+        class="block text-center text-2xl leading-[5rem] lg:text-base lg:font-normal"
+        href="/about/"
+        >About</a
+      >
+      
+      <a
+        class="block text-center text-2xl leading-[5rem] lg:text-base lg:font-normal"
+        href="/posts/"
+        >Posts</a
+      >
+      
+    </nav>
+    
+
+    
+    <nav
+      class="mt-12 flex justify-center space-x-10 dark:invert lg:ml-12 lg:mt-0 lg:items-center lg:space-x-6"
+    >
+      
+      <a
+        class="h-8 w-8 text-[0] [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6"
+        style="--url: url(./twitter.svg)"
+        href="https://twitter.com/vinci2ke3n"
+        target="_blank"
+        rel="me"
+      >
+        twitter
+      </a>
+      
+      <a
+        class="h-8 w-8 text-[0] [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6"
+        style="--url: url(./github.svg)"
+        href="https://github.com/coldinke"
+        target="_blank"
+        rel="me"
+      >
+        github
+      </a>
+      
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-8 pb-16 pt-12 dark:prose-invert"
+    >
+      
+
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">Docker 学习系列（一）： Hello Docker!</h1>
+
+    
+    <div class="text-sm antialiased opacity-60">
+      
+      <time>Aug 3, 2024</time>
+      
+      
+      
+      
+    </div>
+    
+  </header>
+
+  <section><h1 id="docker-基础介绍及常用命令">Docker 基础介绍及常用命令</h1>
+<h2 id="简介">简介</h2>
+<p>Docker 使用 Go 语言开发，基于内核的 cgroup, namespace 以及 OverlayFS 类的 UnionFS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。</p>
+<h2 id="基本概念">基本概念：</h2>
+<h3 id="镜像-image">镜像 （Image）</h3>
+<p>其中官方文档的描述如下：</p>
+<p>The are two important principles of images:</p>
+<ol>
+<li>Images are <strong>immutable</strong>. Once an image is created, it can&rsquo;t be modified. You can only make new image or add changes on <strong>top of it</strong>.</li>
+<li>Container images are composed of layers. Each layer represented a set of file system changes that add, remove or modify files.</li>
+</ol>
+<p>镜像本身是一个特殊的<strong>文件系统</strong>，除了提供容器运行时所需的运行时环境外，镜像本身不包含任何动态数据，并且采用分层存储的架构来缩小本身的体积。</p>
+<h3 id="容器-container">容器 （Container）</h3>
+<p>官方文档描述如下：</p>
+<p>Containers are <strong>isolated processes for each of your app&rsquo;s compoents</strong>.</p>
+<p>Containers are:</p>
+<ul>
+<li><strong>Self-contained</strong>: Each container has everything it needs to function with no reliance on any pre-installed dependencies on the <strong>host machine</strong>.</li>
+<li><strong>Isolated</strong>: Since containers are run in isolation, they have minimal influence on the host and other containers, increasing the security of your applications.</li>
+<li><strong>Independent</strong>: Each container is independently managed. Deleting one container won&rsquo;t affect any other.</li>
+<li><strong>Portable</strong>: Containers can run anywhere! The container that runs on your develpment machine will work the same way in a data center or anywhere in the cloud!</li>
+</ul>
+<p>容器是镜像<strong>运行时的实体</strong>，其允许被创建、启动、停止、删除等操作。容器在运行时会以镜像为基础层，在其上创建一个<strong>当前容器的存储层</strong>并且当该层的生命周期与当前容器绑定。</p>
+<h3 id="仓库-repository">仓库 （Repository）</h3>
+<p>官方文档描述如下：</p>
+<p>A registry is a centralized location that stores and manages container images, whereas a repository is collection of related container images within a registry.</p>
+<p>一个 Docker Registry 中可以包含多个仓库（Repository）；每个仓库可以包含多个标签（Tag）；其中每个 Tag 对应一个镜像。</p>
+<h2 id="常用操作">常用操作</h2>
+<p>常用操作请参考： <a href="https://docs.docker.com/get-started/docker_cheatsheet.pdf">docker CLI Cheat Sheet</a>，以下仅列出命令具体选项请使用 <code>help</code> 或搜索引擎获取。</p>
+<p>镜像：</p>
+<ul>
+<li>获取镜像： <code>docker pull</code></li>
+<li>列出镜像： <code>docker image ls</code></li>
+<li>镜像构建： <code>docker build</code></li>
+<li>推送镜像： <code>docker push</code></li>
+<li>获取镜像 commit 历史： <code>docker history</code></li>
+</ul>
+<p>容器：</p>
+<ul>
+<li>创建容器： <code>docker run</code></li>
+<li>停止容器： <code>docker stop</code></li>
+<li>启动容器： <code>docker start</code></li>
+<li>持久化容器修改： <code>docker commit</code></li>
+</ul>
+<h2 id="参考">参考</h2>
+<p>Docker 官方文档: <a href="https://docs.docker.com/guides/docker-concepts/the-basics/what-is-a-container/">click</a></p>
+<p>Docker 从入门到实践: <a href="https://yeasy.gitbook.io/docker_practice/basic_concept/image">click</a></p>
+</section>
+
+  
+  
+  <footer class="mt-12 flex flex-wrap">
+     
+    <a
+      class="mb-1.5 mr-1.5 rounded-lg bg-black/[3%] px-5 py-1.5 no-underline dark:bg-white/[8%]"
+      href="https://blog.v1nci.xyz/tags/docker"
+      >Docker</a
+    >
+    
+  </footer>
+  
+
+  
+  
+  
+  
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+</article>
+
+
+    </main>
+
+    <footer
+  class="opaco mx-auto flex h-[4.5rem] max-w-3xl items-center px-8 text-[0.9em] opacity-60"
+>
+  <div class="mr-auto">
+    &copy; 2024
+    <a class="link" href="https://blog.v1nci.xyz/">V1nci 的博客</a>
+  </div>
+  <a class="link mx-6" href="https://gohugo.io/" rel="noopener" target="_blank"
+    >Powered by Hugo️️</a
+  >️
+  <a
+    class="link"
+    href="https://github.com/nanxiaobei/hugo-paper"
+    rel="noopener"
+    target="_blank"
+    >✎ Paper</a
+  >
+</footer>
+
+  </body>
+</html>

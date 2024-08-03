@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>OS on V1nci 的博客</title>
+    <link>http://localhost:1313/tags/os/</link>
+    <description>Recent content in OS on V1nci 的博客</description>
+    <generator>Hugo</generator>
+    <language>zh-cn</language>
+    <copyright>2024 © V1nci</copyright>
+    <lastBuildDate>Fri, 24 Nov 2023 21:51:46 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/os/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>操作系统：01</title>
+      <link>http://localhost:1313/posts/os_01/</link>
+      <pubDate>Fri, 24 Nov 2023 21:51:46 +0800</pubDate>
+      <guid>http://localhost:1313/posts/os_01/</guid>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;本系列用于记录笔者在学习操作系统理论和实践中的一系列笔记和个人思考。因为本人水平有限，若存在错误还请各位与我联系并指出，过后我将修改 : )&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
+    </item>
+  </channel>
+</rss>

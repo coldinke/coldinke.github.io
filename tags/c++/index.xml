@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>C&#43;&#43; on Vinci&#39;s Blog</title>
-    <link>https://blog.v1nci.xyz/tags/c&#43;&#43;/</link>
-    <description>Recent content in C&#43;&#43; on Vinci&#39;s Blog</description>
+    <title>C&#43;&#43; on V1nci 的博客</title>
+    <link>http://localhost:1313/tags/c&#43;&#43;/</link>
+    <description>Recent content in C&#43;&#43; on V1nci 的博客</description>
     <generator>Hugo</generator>
-    <language>zh-CN</language>
-    <copyright>© Vinci</copyright>
+    <language>zh-cn</language>
+    <copyright>2024 © V1nci</copyright>
     <lastBuildDate>Tue, 11 Jun 2024 22:17:14 +0800</lastBuildDate>
-    <atom:link href="https://blog.v1nci.xyz/tags/c++/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/tags/c++/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>C&#43;&#43; 面向对象程序设计</title>
-      <link>https://blog.v1nci.xyz/posts/cppnotes/</link>
+      <link>http://localhost:1313/posts/cppnotes/</link>
       <pubDate>Tue, 11 Jun 2024 22:17:14 +0800</pubDate>
-      <guid>https://blog.v1nci.xyz/posts/cppnotes/</guid>
+      <guid>http://localhost:1313/posts/cppnotes/</guid>
       <description>&lt;blockquote&gt;&#xA;&lt;p&gt;本文是笔者学习 C++ 时的笔记，可能存在错误，如若发现，欢迎和笔者交流。&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
     </item>
     <item>
       <title>C&#43;&#43; 面向对象编程简述</title>
-      <link>https://blog.v1nci.xyz/posts/cppoop/</link>
+      <link>http://localhost:1313/posts/cppoop/</link>
       <pubDate>Fri, 24 Nov 2023 17:25:13 +0800</pubDate>
-      <guid>https://blog.v1nci.xyz/posts/cppoop/</guid>
+      <guid>http://localhost:1313/posts/cppoop/</guid>
       <description>&lt;blockquote&gt;&#xA;&lt;p&gt;本文记录了笔者眼中的面向对象程序设计的看法，可能存在错误，欢迎与笔者交流。&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
     </item>
   </channel>
