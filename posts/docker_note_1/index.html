@@ -62,7 +62,7 @@
   
   
   <meta name="description" content="Docker 基础介绍及常用命令 简介 Docker 使用 Go 语言开发，基于内核的 cgroup, namespace 以及 OverlayFS 类的 UnionFS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。
-基本概念： 镜像 （Image） 其中官方文档的描述如下：
+基本概念： 镜像 （Image） 官方文档的描述如下：
 The are two important principles of images:
 Images are immutable. Once an image is created, it can&rsquo;t be modified. You can only make new image or add changes on top of it. Container images are composed of layers. Each layer represented a set of file system changes that add, remove or modify files." />
   <meta name="author" content="V1nci" />
@@ -130,19 +130,19 @@ Images are immutable. Once an image is created, it can&rsquo;t be modified. You 
   
   <meta itemprop="name" content="Docker 学习系列（一）： Hello Docker!">
   <meta itemprop="description" content="Docker 基础介绍及常用命令 简介 Docker 使用 Go 语言开发，基于内核的 cgroup, namespace 以及 OverlayFS 类的 UnionFS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。
-基本概念： 镜像 （Image） 其中官方文档的描述如下：
+基本概念： 镜像 （Image） 官方文档的描述如下：
 The are two important principles of images:
 Images are immutable. Once an image is created, it can’t be modified. You can only make new image or add changes on top of it. Container images are composed of layers. Each layer represented a set of file system changes that add, remove or modify files.">
   <meta itemprop="datePublished" content="2024-08-03T12:36:32+08:00">
   <meta itemprop="dateModified" content="2024-08-03T12:36:32+08:00">
-  <meta itemprop="wordCount" content="251">
+  <meta itemprop="wordCount" content="252">
   <meta itemprop="keywords" content="Docker">
   
   <meta property="og:url" content="https://blog.v1nci.xyz/posts/docker_note_1/">
   <meta property="og:site_name" content="V1nci 的博客">
   <meta property="og:title" content="Docker 学习系列（一）： Hello Docker!">
   <meta property="og:description" content="Docker 基础介绍及常用命令 简介 Docker 使用 Go 语言开发，基于内核的 cgroup, namespace 以及 OverlayFS 类的 UnionFS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。
-基本概念： 镜像 （Image） 其中官方文档的描述如下：
+基本概念： 镜像 （Image） 官方文档的描述如下：
 The are two important principles of images:
 Images are immutable. Once an image is created, it can’t be modified. You can only make new image or add changes on top of it. Container images are composed of layers. Each layer represented a set of file system changes that add, remove or modify files.">
   <meta property="og:locale" content="zh_cn">
@@ -157,7 +157,7 @@ Images are immutable. Once an image is created, it can’t be modified. You can 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Docker 学习系列（一）： Hello Docker!">
   <meta name="twitter:description" content="Docker 基础介绍及常用命令 简介 Docker 使用 Go 语言开发，基于内核的 cgroup, namespace 以及 OverlayFS 类的 UnionFS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。
-基本概念： 镜像 （Image） 其中官方文档的描述如下：
+基本概念： 镜像 （Image） 官方文档的描述如下：
 The are two important principles of images:
 Images are immutable. Once an image is created, it can’t be modified. You can only make new image or add changes on top of it. Container images are composed of layers. Each layer represented a set of file system changes that add, remove or modify files.">
 
@@ -314,13 +314,13 @@ Images are immutable. Once an image is created, it can’t be modified. You can 
 <p>Docker 使用 Go 语言开发，基于内核的 cgroup, namespace 以及 OverlayFS 类的 UnionFS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。</p>
 <h2 id="基本概念">基本概念：</h2>
 <h3 id="镜像-image">镜像 （Image）</h3>
-<p>其中官方文档的描述如下：</p>
+<p>官方文档的描述如下：</p>
 <p>The are two important principles of images:</p>
 <ol>
 <li>Images are <strong>immutable</strong>. Once an image is created, it can&rsquo;t be modified. You can only make new image or add changes on <strong>top of it</strong>.</li>
 <li>Container images are composed of layers. Each layer represented a set of file system changes that add, remove or modify files.</li>
 </ol>
-<p>镜像本身是一个特殊的<strong>文件系统</strong>，除了提供容器运行时所需的运行时环境外，镜像本身不包含任何动态数据，并且采用分层存储的架构来缩小本身的体积。</p>
+<p>镜像本身是一个特殊的<strong>文件系统</strong>，除了提供容器运行时所需的环境外，镜像本身不包含任何动态数据，并且采用分层存储的架构来缩小本身的体积。</p>
 <h3 id="容器-container">容器 （Container）</h3>
 <p>官方文档描述如下：</p>
 <p>Containers are <strong>isolated processes for each of your app&rsquo;s compoents</strong>.</p>
@@ -331,13 +331,13 @@ Images are immutable. Once an image is created, it can’t be modified. You can 
 <li><strong>Independent</strong>: Each container is independently managed. Deleting one container won&rsquo;t affect any other.</li>
 <li><strong>Portable</strong>: Containers can run anywhere! The container that runs on your develpment machine will work the same way in a data center or anywhere in the cloud!</li>
 </ul>
-<p>容器是镜像<strong>运行时的实体</strong>，其允许被创建、启动、停止、删除等操作。容器在运行时会以镜像为基础层，在其上创建一个<strong>当前容器的存储层</strong>并且当该层的生命周期与当前容器绑定。</p>
+<p>容器是镜像<strong>运行时的实体</strong>，其允许被创建、启动、停止、删除等操作。容器在运行时会以镜像为基础层，在其上创建一个<strong>当前容器的存储层</strong>,该层的生命周期与当前容器绑定。</p>
 <h3 id="仓库-repository">仓库 （Repository）</h3>
 <p>官方文档描述如下：</p>
 <p>A registry is a centralized location that stores and manages container images, whereas a repository is collection of related container images within a registry.</p>
-<p>一个 Docker Registry 中可以包含多个仓库（Repository）；每个仓库可以包含多个标签（Tag）；其中每个 Tag 对应一个镜像。</p>
+<p>一个 Docker Registry 中可以包含多个仓库（Repository）；每个仓库可以包含多个标签（Tag）；每个 Tag 对应一个镜像。</p>
 <h2 id="常用操作">常用操作</h2>
-<p>常用操作请参考： <a href="https://docs.docker.com/get-started/docker_cheatsheet.pdf">docker CLI Cheat Sheet</a>，以下仅列出命令具体选项请使用 <code>help</code> 或搜索引擎获取。</p>
+<p>常用操作请参考： <a href="https://docs.docker.com/get-started/docker_cheatsheet.pdf">docker CLI Cheat Sheet</a>，以下仅列出命令, 具体选项请使用 <code>help</code> 或搜索引擎获取。</p>
 <p>镜像：</p>
 <ul>
 <li>获取镜像： <code>docker pull</code></li>
@@ -374,6 +374,17 @@ Images are immutable. Once an image is created, it can’t be modified. You can 
   
   
   
+  
+  <nav class="mt-24 flex rounded-lg bg-black/[3%] text-lg dark:bg-white/[8%]">
+    
+    <a
+      class="flex w-1/2 items-center rounded-l-md p-6 pr-3 font-semibold no-underline hover:bg-black/[2%] dark:hover:bg-white/[3%]"
+      href="https://blog.v1nci.xyz/posts/docker_note_2/"
+      ><span class="mr-1.5">←</span><span>Docker 学习系列（二）： Building images</span></a
+    >
+    
+    
+  </nav>
   
   
 

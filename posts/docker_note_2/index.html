@@ -1,0 +1,504 @@
+<!doctype html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html
+  class="not-ready lg:text-base"
+  style="--bg: #fff"
+  lang="zh-cn"
+>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no"
+  />
+
+  
+  <title>Docker 学习系列（二）： Building images - V1nci 的博客</title>
+
+  
+  <meta name="theme-color" />
+
+  
+  
+  
+  
+  <meta name="description" content="如何使用 Docker 构建镜像并发布？ 镜像的相关概念 从官方文档可以得到如下信息：
+Container images are composed of layers. And each of these layers, once created, are immutable.
+可知，我们这里说构建镜像实际的就是对 layer 进行操作。这里的 layer 是什么？我们继续浏览官方文档。文档中给出了定义如下：
+Image Layers: Each layer in an image contains a set of filesystem changes - additions, deletions or modifications.
+为了说明该定义官网还举了一个示例说明，以下是我的理解： 它的构建过程如下：
+第一层添加些基本工具如 ls, cat，apt(包管理工具)。 第二层安装编程语言的运行时环境和依赖管理工具。如果是 Python 项目，既需要安装 Python 的运行时环境以及对应的依赖管理工具 pip。 第三层从应用程序的工作目录下复制一些必要的配置文件。如 Python 项目需要使用 requirements.txt 来指定当前应用程序需要用到的依赖库。 第四层根据第三层复制的配置文件为应用程序安装必要的依赖文件。 第五层将应用程序的源代码拷贝到当前的镜像中。 这五层可以分为两个阶段： 一是开发环境/运行环境搭建；二是安装应用程序源码及构建应用程序。 而这样分层存储的好处是使 layers 可以在不同的镜像中复用。例如， Image1 和 Image2 同为Python项目，它们使用的开发环境（主要指操作系统和 Python 版本）一致。如果 Image1 又先于 Image2 在本机上测试。 Image2 可以复用 Image1 中关于描述开发环境的 layer。" />
+  <meta name="author" content="V1nci" />
+  
+
+  
+  
+  
+  
+  
+  
+  <link rel="preload stylesheet" as="style" href="https://blog.v1nci.xyz/main.min.css" />
+
+  
+  
+  
+  
+  
+  <link rel="preload" as="image" href="https://blog.v1nci.xyz/theme.png" />
+
+  
+  
+  
+  
+  <link rel="preload" as="image" href="https://blog-pricture.obs.cn-east-3.myhuaweicloud.com/image/Ih.jpg" />
+  
+  
+
+  
+  
+  <link rel="preload" as="image" href="https://blog.v1nci.xyz/twitter.svg" />
+  
+  <link rel="preload" as="image" href="https://blog.v1nci.xyz/github.svg" />
+  
+  
+
+  
+  
+  <script
+    defer
+    src="https://blog.v1nci.xyz/highlight.min.js"
+    onload="hljs.initHighlightingOnLoad();"
+  ></script>
+  
+
+  
+  
+  
+
+  
+  <link rel="icon" href="https://blog.v1nci.xyz/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://blog.v1nci.xyz/apple-touch-icon.png" />
+
+  
+  <meta name="generator" content="Hugo 0.128.2">
+
+  
+  
+  
+  
+  
+
+
+  
+  
+  <meta itemprop="name" content="Docker 学习系列（二）： Building images">
+  <meta itemprop="description" content="如何使用 Docker 构建镜像并发布？ 镜像的相关概念 从官方文档可以得到如下信息：
+Container images are composed of layers. And each of these layers, once created, are immutable.
+可知，我们这里说构建镜像实际的就是对 layer 进行操作。这里的 layer 是什么？我们继续浏览官方文档。文档中给出了定义如下：
+Image Layers: Each layer in an image contains a set of filesystem changes - additions, deletions or modifications.
+为了说明该定义官网还举了一个示例说明，以下是我的理解： 它的构建过程如下：
+第一层添加些基本工具如 ls, cat，apt(包管理工具)。 第二层安装编程语言的运行时环境和依赖管理工具。如果是 Python 项目，既需要安装 Python 的运行时环境以及对应的依赖管理工具 pip。 第三层从应用程序的工作目录下复制一些必要的配置文件。如 Python 项目需要使用 requirements.txt 来指定当前应用程序需要用到的依赖库。 第四层根据第三层复制的配置文件为应用程序安装必要的依赖文件。 第五层将应用程序的源代码拷贝到当前的镜像中。 这五层可以分为两个阶段： 一是开发环境/运行环境搭建；二是安装应用程序源码及构建应用程序。 而这样分层存储的好处是使 layers 可以在不同的镜像中复用。例如， Image1 和 Image2 同为Python项目，它们使用的开发环境（主要指操作系统和 Python 版本）一致。如果 Image1 又先于 Image2 在本机上测试。 Image2 可以复用 Image1 中关于描述开发环境的 layer。">
+  <meta itemprop="datePublished" content="2024-08-03T16:25:13+08:00">
+  <meta itemprop="dateModified" content="2024-08-03T16:25:13+08:00">
+  <meta itemprop="wordCount" content="597">
+  <meta itemprop="keywords" content="Docker">
+  
+  <meta property="og:url" content="https://blog.v1nci.xyz/posts/docker_note_2/">
+  <meta property="og:site_name" content="V1nci 的博客">
+  <meta property="og:title" content="Docker 学习系列（二）： Building images">
+  <meta property="og:description" content="如何使用 Docker 构建镜像并发布？ 镜像的相关概念 从官方文档可以得到如下信息：
+Container images are composed of layers. And each of these layers, once created, are immutable.
+可知，我们这里说构建镜像实际的就是对 layer 进行操作。这里的 layer 是什么？我们继续浏览官方文档。文档中给出了定义如下：
+Image Layers: Each layer in an image contains a set of filesystem changes - additions, deletions or modifications.
+为了说明该定义官网还举了一个示例说明，以下是我的理解： 它的构建过程如下：
+第一层添加些基本工具如 ls, cat，apt(包管理工具)。 第二层安装编程语言的运行时环境和依赖管理工具。如果是 Python 项目，既需要安装 Python 的运行时环境以及对应的依赖管理工具 pip。 第三层从应用程序的工作目录下复制一些必要的配置文件。如 Python 项目需要使用 requirements.txt 来指定当前应用程序需要用到的依赖库。 第四层根据第三层复制的配置文件为应用程序安装必要的依赖文件。 第五层将应用程序的源代码拷贝到当前的镜像中。 这五层可以分为两个阶段： 一是开发环境/运行环境搭建；二是安装应用程序源码及构建应用程序。 而这样分层存储的好处是使 layers 可以在不同的镜像中复用。例如， Image1 和 Image2 同为Python项目，它们使用的开发环境（主要指操作系统和 Python 版本）一致。如果 Image1 又先于 Image2 在本机上测试。 Image2 可以复用 Image1 中关于描述开发环境的 layer。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-08-03T16:25:13+08:00">
+    <meta property="article:modified_time" content="2024-08-03T16:25:13+08:00">
+    <meta property="article:tag" content="Docker">
+
+  
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Docker 学习系列（二）： Building images">
+  <meta name="twitter:description" content="如何使用 Docker 构建镜像并发布？ 镜像的相关概念 从官方文档可以得到如下信息：
+Container images are composed of layers. And each of these layers, once created, are immutable.
+可知，我们这里说构建镜像实际的就是对 layer 进行操作。这里的 layer 是什么？我们继续浏览官方文档。文档中给出了定义如下：
+Image Layers: Each layer in an image contains a set of filesystem changes - additions, deletions or modifications.
+为了说明该定义官网还举了一个示例说明，以下是我的理解： 它的构建过程如下：
+第一层添加些基本工具如 ls, cat，apt(包管理工具)。 第二层安装编程语言的运行时环境和依赖管理工具。如果是 Python 项目，既需要安装 Python 的运行时环境以及对应的依赖管理工具 pip。 第三层从应用程序的工作目录下复制一些必要的配置文件。如 Python 项目需要使用 requirements.txt 来指定当前应用程序需要用到的依赖库。 第四层根据第三层复制的配置文件为应用程序安装必要的依赖文件。 第五层将应用程序的源代码拷贝到当前的镜像中。 这五层可以分为两个阶段： 一是开发环境/运行环境搭建；二是安装应用程序源码及构建应用程序。 而这样分层存储的好处是使 layers 可以在不同的镜像中复用。例如， Image1 和 Image2 同为Python项目，它们使用的开发环境（主要指操作系统和 Python 版本）一致。如果 Image1 又先于 Image2 在本机上测试。 Image2 可以复用 Image1 中关于描述开发环境的 layer。">
+
+  
+  
+  
+  <link rel="canonical" href="https://blog.v1nci.xyz/posts/docker_note_2/" />
+  
+  
+</head>
+
+  <body class="text-black duration-200 ease-out dark:text-white">
+    <header class="mx-auto flex h-[4.5rem] max-w-3xl px-8 lg:justify-center">
+  <div class="relative z-50 mr-auto flex items-center">
+    <a
+      class="-translate-x-[1px] -translate-y-[1px] text-2xl font-semibold"
+      href="https://blog.v1nci.xyz/"
+      >V1nci 的博客</a
+    >
+    <div
+      class="btn-dark text-[0] ml-4 h-6 w-6 shrink-0 cursor-pointer [background:url(./theme.png)_left_center/_auto_theme('spacing.6')_no-repeat] [transition:_background-position_0.4s_steps(5)] dark:[background-position:right]"
+      role="button"
+      aria-label="Dark"
+    ></div>
+  </div>
+
+  <div
+    class="btn-menu relative z-50 -mr-8 flex h-[4.5rem] w-[5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"
+    role="button"
+    aria-label="Menu"
+  ></div>
+
+  
+
+  <script>
+    
+    const htmlClass = document.documentElement.classList;
+    setTimeout(() => {
+      htmlClass.remove('not-ready');
+    }, 10);
+
+    
+    const btnMenu = document.querySelector('.btn-menu');
+    btnMenu.addEventListener('click', () => {
+      htmlClass.toggle('open');
+    });
+
+    
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    const lightBg = '#fff'.replace(/"/g, '');
+    const setDark = (isDark) => {
+      metaTheme.setAttribute('content', isDark ? '#000' : lightBg);
+      htmlClass[isDark ? 'add' : 'remove']('dark');
+      localStorage.setItem('dark', isDark);
+    };
+
+    
+    const darkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    if (htmlClass.contains('dark')) {
+      setDark(true);
+    } else {
+      const darkVal = localStorage.getItem('dark');
+      setDark(darkVal ? darkVal === 'true' : darkScheme.matches);
+    }
+
+    
+    darkScheme.addEventListener('change', (event) => {
+      setDark(event.matches);
+    });
+
+    
+    const btnDark = document.querySelector('.btn-dark');
+    btnDark.addEventListener('click', () => {
+      setDark(localStorage.getItem('dark') !== 'true');
+    });
+  </script>
+
+  <div
+    class="nav-wrapper fixed inset-x-0 top-full z-40 flex h-full select-none flex-col justify-center pb-16 duration-200 dark:bg-black lg:static lg:h-auto lg:flex-row lg:!bg-transparent lg:pb-0 lg:transition-none"
+  >
+    
+    
+    <nav class="lg:ml-12 lg:flex lg:flex-row lg:items-center lg:space-x-6">
+      
+      <a
+        class="block text-center text-2xl leading-[5rem] lg:text-base lg:font-normal"
+        href="/about/"
+        >About</a
+      >
+      
+      <a
+        class="block text-center text-2xl leading-[5rem] lg:text-base lg:font-normal"
+        href="/posts/"
+        >Posts</a
+      >
+      
+    </nav>
+    
+
+    
+    <nav
+      class="mt-12 flex justify-center space-x-10 dark:invert lg:ml-12 lg:mt-0 lg:items-center lg:space-x-6"
+    >
+      
+      <a
+        class="h-8 w-8 text-[0] [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6"
+        style="--url: url(./twitter.svg)"
+        href="https://twitter.com/vinci2ke3n"
+        target="_blank"
+        rel="me"
+      >
+        twitter
+      </a>
+      
+      <a
+        class="h-8 w-8 text-[0] [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6"
+        style="--url: url(./github.svg)"
+        href="https://github.com/coldinke"
+        target="_blank"
+        rel="me"
+      >
+        github
+      </a>
+      
+    </nav>
+    
+  </div>
+</header>
+
+
+    <main
+      class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-8 pb-16 pt-12 dark:prose-invert"
+    >
+      
+
+<article>
+  <header class="mb-16">
+    <h1 class="!my-0 pb-2.5">Docker 学习系列（二）： Building images</h1>
+
+    
+    <div class="text-sm antialiased opacity-60">
+      
+      <time>Aug 3, 2024</time>
+      
+      
+      
+      
+    </div>
+    
+  </header>
+
+  <section><h1 id="如何使用-docker-构建镜像并发布">如何使用 Docker 构建镜像并发布？</h1>
+<h2 id="镜像的相关概念">镜像的相关概念</h2>
+<p>从官方文档可以得到如下信息：</p>
+<p>Container images are <strong>composed</strong> of layers. And each of these layers, once created, are <strong>immutable</strong>.</p>
+<p>可知，我们这里说构建镜像实际的就是对 layer 进行操作。这里的 layer 是什么？我们继续浏览官方文档。文档中给出了定义如下：</p>
+<p>Image Layers: Each layer in an image contains a set of filesystem changes - additions, deletions or modifications.</p>
+<p>为了说明该定义官网还举了一个<a href="https://docs.docker.com/guides/docker-concepts/building-images/understanding-image-layers/#image-layers">示例</a>说明，以下是我的理解：
+<img src="https://docs.docker.com/guides/docker-concepts/building-images/images/container_image_layers.webp" alt="example_image">
+它的构建过程如下：</p>
+<ol>
+<li>第一层添加些基本工具如 ls, cat，apt(包管理工具)。</li>
+<li>第二层安装编程语言的运行时环境和依赖管理工具。如果是 Python 项目，既需要安装 Python 的运行时环境以及对应的依赖管理工具 pip。</li>
+<li>第三层从应用程序的工作目录下复制一些必要的配置文件。如 Python 项目需要使用 <code>requirements.txt</code> 来指定当前应用程序需要用到的依赖库。</li>
+<li>第四层根据第三层复制的配置文件为应用程序安装必要的依赖文件。</li>
+<li>第五层将应用程序的源代码拷贝到当前的镜像中。</li>
+</ol>
+<p>这五层可以分为两个阶段： 一是开发环境/运行环境搭建；二是安装应用程序源码及构建应用程序。 而这样分层存储的好处是使 layers 可以在不同的镜像中复用。例如， Image1 和 Image2 同为Python项目，它们使用的开发环境（主要指操作系统和 Python 版本）一致。如果 Image1 又先于 Image2 在本机上测试。 Image2 可以复用 Image1 中关于描述开发环境的 layer。</p>
+<p>官方文档中描述原理的部分请看 <a href="https://docs.docker.com/guides/docker-concepts/building-images/understanding-image-layers/#stacking-the-layers">Stacking the layers</a></p>
+<p>有关 <code>docker commit</code> 的实践部分就不在这里详述了，具体请跟着<a href="https://docs.docker.com/guides/docker-concepts/building-images/understanding-image-layers/#try-it-out">官方文档</a>操作一遍即可理解。</p>
+<h2 id="dockerfile-是什么">Dockerfile 是什么？</h2>
+<p>有了解过 CI/CD 这一工程实践的经验。在看 Dockerfile 就会轻松许多。Dockerfile 本身就是一个指令的集合。其中 Docker 会根据当前 Dockerfile 中定义的指令按顺序执行。具体我们来看官方的描述：</p>
+<p>A Dockerfile is a <strong>text-based</strong> document that&rsquo;s used to create a container image. It provides instructions to the image builder on the commands to run, files to copy, startup command, and more.</p>
+<h2 id="dockerfile-的构成元素---指令">Dockerfile 的构成元素 - 指令</h2>
+<p>以下是 Dockerfile 中比较常见的指令，更详细的请浏览官方的 <a href="https://docs.docker.com/reference/dockerfile/">reference</a></p>
+<ul>
+<li><code>From &lt;image&gt;</code> -  this sepcifiex the <strong>base image</strong> that build will extend.</li>
+<li><code>WORKDIR &lt;path&gt;</code> - this instruction specifies the &ldquo;working directory&rdquo; or the path in the image <strong>where files will be copied and commands will be executed</strong>.</li>
+<li><code>COPY &lt;host-path&gt; &lt;image-path&gt;</code> - this instruction tells the <strong>builder to copy files from the host and put them into the container image</strong>.</li>
+<li><code>RUN &lt;command&gt;</code> - this instruction tells the <strong>builder ot run the specified command</strong>.</li>
+<li><code>ENV &lt;name&gt; &lt;value&gt;</code> - this instruction sets <strong>an environment variable that a running container will use</strong>.</li>
+<li><code>EXPOSE &lt;port-number&gt;</code> - this instruction <strong>sets configuration on the image that indicates a port the image would like to expose</strong>.</li>
+<li><code>USER &lt;user-or-uid&gt;</code> - this instruction <strong>sets the default user for all subsequent instructions</strong>.</li>
+<li><code>CMD [&quot;&lt;command&gt;&quot;, &quot;&lt;arg1&gt;&quot;]</code> - this instruction <strong>sets the default command a container using this image will run</strong>.</li>
+</ul>
+<h2 id="dockfile-使用">Dockfile 使用</h2>
+<p>下面我们根据官方提供的示例来看看 Dockerfile 的使用。</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> node:20-alpine</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">WORKDIR</span><span style="color:#e6db74"> /usr/local/app</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> . .<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> yarn install --production<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">CMD</span> [<span style="color:#e6db74">&#34;node&#34;</span>, <span style="color:#e6db74">&#34;src/index.js&#34;</span>]<span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>后在终端中定位到 Dockerfile 的同级目录下使用 <code>docker build .</code> 命令会得到以下输出：</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">=</span>&gt; <span style="color:#f92672">[</span>internal<span style="color:#f92672">]</span> load build context         0.1s
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=</span>&gt; <span style="color:#f92672">=</span>&gt; transferring context: 4.59MB       0.0s 
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=</span>&gt; <span style="color:#f92672">[</span>2/4<span style="color:#f92672">]</span> WORKDIR /usr/local/app          0.3s
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=</span>&gt; <span style="color:#f92672">[</span>3/4<span style="color:#f92672">]</span> COPY . .                        0.0sd
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=</span>&gt; <span style="color:#f92672">[</span>4/4<span style="color:#f92672">]</span> RUN yarn install --production  55.3s
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=</span>&gt; <span style="color:#f92672">=</span>&gt; <span style="color:#75715e"># yarn install v1.22.22                l</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=</span>&gt; <span style="color:#f92672">=</span>&gt; <span style="color:#75715e"># warning package.json: No license fiel</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=</span>&gt; <span style="color:#f92672">=</span>&gt; <span style="color:#75715e"># warning backend@1.0.0: No license fie </span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=</span>&gt; <span style="color:#f92672">=</span>&gt; <span style="color:#75715e"># [1/4] Resolving packages...          </span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=</span>&gt; <span style="color:#f92672">=</span>&gt; <span style="color:#75715e"># [2/4] Fetching packages...            </span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=</span>&gt; <span style="color:#f92672">=</span>&gt; <span style="color:#75715e"># [3/4] Linking dependencies...        </span>
+</span></span><span style="display:flex;"><span> ...
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=</span>&gt; <span style="color:#f92672">[</span>3/4<span style="color:#f92672">]</span> COPY . .                        0.0s
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=</span>&gt; <span style="color:#f92672">[</span>4/4<span style="color:#f92672">]</span> RUN yarn install --production  59.8s
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=</span>&gt; exporting to image                    0.5s
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=</span>&gt; <span style="color:#f92672">=</span>&gt; exporting layers                   0.5s
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=</span>&gt; <span style="color:#f92672">=</span>&gt; writing image sha256:9a78dcad9342  0.0s
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>最后会得到 sha256 的标识码，使用 <code>docker run SHA256:....</code> 即可运行该镜像。</p>
+<p>运行效果：<img src="https://blog-pricture.obs.cn-east-3.myhuaweicloud.com/image/202408031724692.png" alt="run result"></p>
+<p>更为复杂的例子可以参考<a href="https://yeasy.gitbook.io/docker_practice/image/multistage-builds">Docker 从入门到实践</a>的这一个部分。</p>
+<h2 id="镜像发布">镜像发布</h2>
+<p>在前文中我们已经知道如何构建一个镜像，如若我们想把构建好的镜像发布到互联网上该如何做呢？我们继续浏览官方文档。在之前的实践中我们知道使用 <code>docker build .</code> 最后 Docker 会输出一串 <code>sha256</code> 的字符串用于标识我们构建的镜像。显然记忆 sha256 的字符是复杂的， 但在使用过程中我们必须能区分镜像，Docker 使用标签机制来解决这个问题。</p>
+<p>Tagging images is the method to provide an image with a memorable name.</p>
+<p>单一的标签可能会出现歧义的，为了减少歧义， Docker 采用了较为复杂的命名结构。结构如下：</p>
+<p><code>[HOST[:PORT_NUMBER]/]PATH[:TAG]</code></p>
+<ul>
+<li><code>HOST</code>: The <strong>optional</strong> registry hostname where the image is located. If no host is specified, Docker&rsquo;s <strong>public registry at <code>docker.io</code> is used by defatult</strong>.</li>
+<li><code>PORT_NUMBER</code>: The registry port numbers if a hostname is provided.</li>
+<li><code>PATH</code>: The path of image, consisting of slash-separated components. For Docker Hub, the format follows <code>[NAMESPACE/]REPOSITORY</code>, where namespace is either a user&rsquo;s or organization&rsquo;s name. If no namespace is specified, <code>library</code> is used, which is the namespace for Docker Official Images.</li>
+<li><code>TAG</code>: A custom, human-readable identifier that&rsquo;s typically used to identify different versions or variants of an image. If no tag is specified, <strong><code>latest</code> is used by default.</strong></li>
+</ul>
+<p>如果想在镜像构建的前中标记镜像，可以使用如下命令：</p>
+<p><code>docker build -t my-username/my-image .</code></p>
+<p>如果镜像已经构建完成后想要标记镜像。则可以使用如下命令：</p>
+<p><code>docker image tag my-username/my-image another-username/another-image:V1</code></p>
+<p>至此，我们已经为镜像的发布做好了所有的准备工作。使用命令</p>
+<p><code>docker push my-username/my-imgae</code></p>
+<p>即可将我们构建好的镜像发送到指定的 Registery。 这里只是将镜像构建发布的流程记录下来，实际操作过程中还涉及到一些细节如身份验证等问题。详情请参考<a href="https://docs.docker.com/guides/docker-concepts/building-images/build-tag-and-publish-an-image/#try-it-out">官方的小例子</a>。</p>
+<h2 id="参考">参考</h2>
+<p>Docker 官方文档: <a href="https://docs.docker.com/guides/docker-concepts/building-images/understanding-image-layers/">click</a></p>
+<p>Docker 从入门到实践: <a href="https://yeasy.gitbook.io/docker_practice">click</a></p>
+</section>
+
+  
+  
+  <footer class="mt-12 flex flex-wrap">
+     
+    <a
+      class="mb-1.5 mr-1.5 rounded-lg bg-black/[3%] px-5 py-1.5 no-underline dark:bg-white/[8%]"
+      href="https://blog.v1nci.xyz/tags/docker"
+      >Docker</a
+    >
+    
+  </footer>
+  
+
+  
+  
+  
+  
+  <nav class="mt-24 flex rounded-lg bg-black/[3%] text-lg dark:bg-white/[8%]">
+    
+    
+    <a
+      class="ml-auto flex w-1/2 items-center justify-end rounded-r-md p-6 pl-3 font-semibold no-underline hover:bg-black/[2%] dark:hover:bg-white/[3%]"
+      href="https://blog.v1nci.xyz/posts/docker_note_1/"
+      ><span>Docker 学习系列（一）： Hello Docker!</span><span class="ml-1.5">→</span></a
+    >
+    
+  </nav>
+  
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+</article>
+
+
+    </main>
+
+    <footer
+  class="opaco mx-auto flex h-[4.5rem] max-w-3xl items-center px-8 text-[0.9em] opacity-60"
+>
+  <div class="mr-auto">
+    &copy; 2024
+    <a class="link" href="https://blog.v1nci.xyz/">V1nci 的博客</a>
+  </div>
+  <a class="link mx-6" href="https://gohugo.io/" rel="noopener" target="_blank"
+    >Powered by Hugo️️</a
+  >️
+  <a
+    class="link"
+    href="https://github.com/nanxiaobei/hugo-paper"
+    rel="noopener"
+    target="_blank"
+    >✎ Paper</a
+  >
+</footer>
+
+  </body>
+</html>
