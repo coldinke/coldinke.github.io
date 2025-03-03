@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>V1nci 的博客</title>
+    <link>https://blog.v1nci.xyz/zh/</link>
+    <description>Recent content on V1nci 的博客</description>
+    <generator>Hugo -- 0.128.0</generator>
+    <language>zh</language>
+    <copyright>2024 - 2025 © V1nci</copyright>
+    <lastBuildDate>Sat, 03 Aug 2024 16:25:13 +0800</lastBuildDate>
+    <atom:link href="https://blog.v1nci.xyz/zh/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Docker 学习系列（二）： Building images</title>
+      <link>https://blog.v1nci.xyz/zh/develop/docker_note_2/</link>
+      <pubDate>Sat, 03 Aug 2024 16:25:13 +0800</pubDate>
+      <guid>https://blog.v1nci.xyz/zh/develop/docker_note_2/</guid>
+      <description>如何使用 Docker 构建镜像并发布？ 镜像的相关概念 从官方文档可以得到如下信息：
+Container images are composed of layers. And each of these layers, once created, are immutable.
+可知，我们这里说构建镜像实际的就是对 layer 进行操作。这里的 layer 是什么？我们继续浏览官方文档。文档中给出了定义如下：
+Image Layers: Each layer in an image contains a set of filesystem changes - additions, deletions or modifications.
+为了说明该定义官网还举了一个示例说明，以下是我的理解： 它的构建过程如下：
+第一层添加些基本工具如 ls, cat，apt(包管理工具)。 第二层安装编程语言的运行时环境和依赖管理工具。如果是 Python 项目，既需要安装 Python 的运行时环境以及对应的依赖管理工具 pip。 第三层从应用程序的工作目录下复制一些必要的配置文件。如 Python 项目需要使用 requirements.txt 来指定当前应用程序需要用到的依赖库。 第四层根据第三层复制的配置文件为应用程序安装必要的依赖文件。 第五层将应用程序的源代码拷贝到当前的镜像中。 这五层可以分为两个阶段： 一是开发环境/运行环境搭建；二是安装应用程序源码及构建应用程序。 而这样分层存储的好处是使 layers 可以在不同的镜像中复用。例如， Image1 和 Image2 同为Python项目，它们使用的开发环境（主要指操作系统和 Python 版本）一致。如果 Image1 又先于 Image2 在本机上测试。 Image2 可以复用 Image1 中关于描述开发环境的 layer。</description>
+    </item>
+    <item>
+      <title>Docker 学习系列（一）： Hello Docker!</title>
+      <link>https://blog.v1nci.xyz/zh/develop/docker_note_1/</link>
+      <pubDate>Sat, 03 Aug 2024 12:36:32 +0800</pubDate>
+      <guid>https://blog.v1nci.xyz/zh/develop/docker_note_1/</guid>
+      <description>Docker 基础介绍及常用命令 简介 Docker 使用 Go 语言开发，基于内核的 cgroup, namespace 以及 OverlayFS 类的 UnionFS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。
+基本概念： 镜像 （Image） 官方文档的描述如下：
+The are two important principles of images:
+Images are immutable. Once an image is created, it can&amp;rsquo;t be modified. You can only make new image or add changes on top of it. Container images are composed of layers. Each layer represented a set of file system changes that add, remove or modify files.</description>
+    </item>
+  </channel>
+</rss>
