@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>V1nci&#39;s Blog</title>
-    <link>https://blog.v1nci.xyz/</link>
-    <description>Recent content on V1nci&#39;s Blog</description>
+    <title>Develop on V1nci&#39;s Blog</title>
+    <link>https://blog.v1nci.xyz/tags/develop/</link>
+    <description>Recent content in Develop on V1nci&#39;s Blog</description>
     <generator>Hugo -- 0.128.0</generator>
     <language>en</language>
     <copyright>2024 - 2025 © V1nci</copyright>
     <lastBuildDate>Sat, 01 Mar 2025 18:41:13 +0800</lastBuildDate>
-    <atom:link href="https://blog.v1nci.xyz/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.v1nci.xyz/tags/develop/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>gRPC</title>
       <link>https://blog.v1nci.xyz/develop/grpc_roadmap/</link>
@@ -16,16 +16,6 @@
       <guid>https://blog.v1nci.xyz/develop/grpc_roadmap/</guid>
       <description>For test
 gRPC Roadmap RPC gRPC General Method Exercise Others TODO</description>
-    </item>
-    <item>
-      <title>Fuzzing</title>
-      <link>https://blog.v1nci.xyz/security/fuzzing_roadmap/</link>
-      <pubDate>Fri, 28 Feb 2025 23:59:13 +0800</pubDate>
-      <guid>https://blog.v1nci.xyz/security/fuzzing_roadmap/</guid>
-      <description>For test
-Fuzzing Roadmap TODO
-Target TODO
-General Method TODO</description>
     </item>
   </channel>
 </rss>

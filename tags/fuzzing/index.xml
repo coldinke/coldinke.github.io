@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Securities on V1nci&#39;s Blog</title>
-    <link>https://blog.v1nci.xyz/security/</link>
-    <description>Recent content in Securities on V1nci&#39;s Blog</description>
+    <title>Fuzzing on V1nci&#39;s Blog</title>
+    <link>https://blog.v1nci.xyz/tags/fuzzing/</link>
+    <description>Recent content in Fuzzing on V1nci&#39;s Blog</description>
     <generator>Hugo -- 0.128.0</generator>
     <language>en</language>
     <copyright>2024 - 2025 © V1nci</copyright>
     <lastBuildDate>Fri, 28 Feb 2025 23:59:13 +0800</lastBuildDate>
-    <atom:link href="https://blog.v1nci.xyz/security/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.v1nci.xyz/tags/fuzzing/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Fuzzing</title>
       <link>https://blog.v1nci.xyz/security/fuzzing_roadmap/</link>

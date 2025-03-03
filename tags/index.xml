@@ -7,6 +7,21 @@
     <generator>Hugo -- 0.128.0</generator>
     <language>en</language>
     <copyright>2024 - 2025 © V1nci</copyright>
+    <lastBuildDate>Sat, 01 Mar 2025 18:41:13 +0800</lastBuildDate>
     <atom:link href="https://blog.v1nci.xyz/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Develop</title>
+      <link>https://blog.v1nci.xyz/tags/develop/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://blog.v1nci.xyz/tags/develop/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Fuzzing</title>
+      <link>https://blog.v1nci.xyz/tags/fuzzing/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://blog.v1nci.xyz/tags/fuzzing/</guid>
+      <description></description>
+    </item>
   </channel>
 </rss>

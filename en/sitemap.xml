@@ -2,6 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://blog.v1nci.xyz/tags/develop/</loc>
+    <lastmod>2025-03-01T18:41:13+08:00</lastmod>
+  </url><url>
     <loc>https://blog.v1nci.xyz/develop/</loc>
     <lastmod>2025-03-01T18:41:13+08:00</lastmod>
     <xhtml:link
@@ -13,6 +16,22 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://blog.v1nci.xyz/develop/"
+                />
+  </url><url>
+    <loc>https://blog.v1nci.xyz/develop/grpc_roadmap/</loc>
+    <lastmod>2025-03-01T18:41:13+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.v1nci.xyz/tags/</loc>
+    <lastmod>2025-03-01T18:41:13+08:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://blog.v1nci.xyz/zh/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://blog.v1nci.xyz/tags/"
                 />
   </url><url>
     <loc>https://blog.v1nci.xyz/</loc>
@@ -27,6 +46,12 @@
                 hreflang="en"
                 href="https://blog.v1nci.xyz/"
                 />
+  </url><url>
+    <loc>https://blog.v1nci.xyz/tags/fuzzing/</loc>
+    <lastmod>2025-02-28T23:59:13+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.v1nci.xyz/security/fuzzing_roadmap/</loc>
+    <lastmod>2025-02-28T23:59:13+08:00</lastmod>
   </url><url>
     <loc>https://blog.v1nci.xyz/security/</loc>
     <lastmod>2025-02-28T23:59:13+08:00</lastmod>
@@ -65,18 +90,6 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://blog.v1nci.xyz/search/"
-                />
-  </url><url>
-    <loc>https://blog.v1nci.xyz/tags/</loc>
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh"
-                href="https://blog.v1nci.xyz/zh/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://blog.v1nci.xyz/tags/"
                 />
   </url>
 </urlset>
