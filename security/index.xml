@@ -7,17 +7,19 @@
     <generator>Hugo -- 0.128.0</generator>
     <language>en</language>
     <copyright>2024 - 2025 © V1nci</copyright>
-    <lastBuildDate>Fri, 28 Feb 2025 23:59:13 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 24 Mar 2025 09:46:18 +0800</lastBuildDate>
     <atom:link href="https://blog.v1nci.xyz/security/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Fuzzing</title>
-      <link>https://blog.v1nci.xyz/security/fuzzing_roadmap/</link>
-      <pubDate>Fri, 28 Feb 2025 23:59:13 +0800</pubDate>
-      <guid>https://blog.v1nci.xyz/security/fuzzing_roadmap/</guid>
-      <description>For test
-Fuzzing Roadmap TODO
-Target TODO
-General Method TODO</description>
+      <title>Binary Security Protections</title>
+      <link>https://blog.v1nci.xyz/security/commonsecurityprotections/</link>
+      <pubDate>Mon, 24 Mar 2025 09:46:18 +0800</pubDate>
+      <guid>https://blog.v1nci.xyz/security/commonsecurityprotections/</guid>
+      <description>Linux ASLR (Address Space Layout Randomization) Description: ASLR randomly arrages the address space positions of key data areas of a process,including the base of the executeable and the positions of the stack, heap and libraries.
+Check Status: cat /proc/sys/kernel/randomize_va_space
+Enable: sudo sysctl -w kernel.randomize_va_space=2
+Value:
+0: Disabled 1: Partial (randomizes stack, mmap regions, but not heap) 2: Full (randomizes all regions) More Information: WikiPedia
+Stack Canary Description: Canaries or canary or stack cookies are know value that are placed between a buffer and control data on the stack to monitor buffer overflows.</description>
     </item>
   </channel>
 </rss>
